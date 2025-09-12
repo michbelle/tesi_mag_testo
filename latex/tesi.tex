@@ -1,0 +1,133 @@
+% !TeX document-id = {723fde2e-8374-4acb-a15d-4655fdd0b330}
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
+\pdfminorversion=7
+%\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[12pt,a4paper,twoside]{report}%report
+%\usepackage[style=numeric, backend=bibtex]{biblatex}
+\usepackage[style=numeric, backend=bibtex]{biblatex}
+\addbibresource{cap/references.bib}
+\usepackage{graphicx}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{hyperref}
+\usepackage{subcaption}
+%%%%%%
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage[utf8]{inputenc}
+
+%%fonts
+%\usepackage{lmodern}
+%\usepackage[qtm]{tgtermes}
+
+\usepackage{xcolor}
+
+%% code part
+\usepackage{listings}
+\usepackage{minted}
+\usemintedstyle{bw}
+
+%% TOREMOVE
+\usepackage{easyReview}
+
+%% ~
+\usepackage{textcomp}
+\newcommand{\mytexttilde}{\raisebox{0.5ex}{\texttildelow}}
+%% error copy _
+\usepackage[T1]{fontenc}
+%\usepackage{lmodern}
+
+
+%% pdf-A
+%\usepackage[a-1b,mathxmp]{pdfx}[2018/12/22]
+%\usepackage{colorprofiles}
+%\usepackage{pdfa}
+
+%\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+%	\Title{An implementation of Open-RMF in an industrial environment}
+%	\Author{Michele Belletti}
+%	\Language{en-GB}
+%	\Subject{The abstract or short description.}
+%	\Keywords{keyword1\sep keyword2\sep keyword3}
+%\end{filecontents*}
+
+\title{An implementation of Open-RMF in an industrial environment}
+\author{Michele Belletti}
+%\date{2025\\ December}
+
+%\usepackage{blindtext}
+%\usepackage{emptypage}
+%\usepackage{graphicx}
+%\usepackage{float}
+%\usepackage{amsmath}
+%\usepackage{gensymb}
+%\usepackage{textcomp}
+%\usepackage{booktabs}
+
+%\usepackage{setspace}
+%\setstretch{1.5}
+
+%\usepackage{subcaption}
+
+%\usepackage{multirow}
+
+%\usepackage{natbib}
+% modification to natbib citations
+%\bibliographystyle{tmlr}
+%\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+
+%\usepackage[format=hang,font=small,labelfont=bf]{caption}
+
+%\usepackage{etoolbox}
+%\renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+%\renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+
+%\setcounter{topnumber}{2}
+%\setcounter{bottomnumber}{2}
+%\setcounter{totalnumber}{4}     % 2 may work better
+%\setcounter{dbltopnumber}{2}    % for 2-column pages
+%\renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+%\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+
+\begin{document}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\linewidth]{img/units_simbl.png}
+\end{figure}
+\hrule
+\vspace*{10mm}
+\begin{center}
+{\large 	Dipartimento di Ingegneria e Architettura\\
+	\vspace*{7mm}
+	CORSO DI LAUREA IN INGEGNERIA DELL'ENERGIA\\ ELETTRICA E DEI SISTEMI\\
+	\vspace*{7mm}
+	PROVA FINALE\\}
+\vspace{10mm}
+{\huge AN IMPLEMENTATION OF\vspace{5mm}
+OPEN-RMF IN AN\vspace{5mm}
+INDUSTRIAL ENVIRONMENT}
+\end{center}
+\vspace{30mm}
+Laureando: Michele Belletti
+\mbox{}\hfill Relatore: \hspace{7.5mm} Stefano Seriani\\
+\mbox{}\hfill Correlatori: \hspace{4mm} Roberto Pugliese\\
+\mbox{}\hfill Georgios Kourousias\\
+\vspace{30mm}
+
+\begin{center}
+	ANNO ACCADEMICO 2024-2025
+\end{center}
+
+%\maketitle
+\tableofcontents
+
+\include{cap/Introduction.tex}
+\include{cap/LiteratureReview.tex}
+\include{cap/Methodology.tex}
+\include{cap/Result.tex}
+\include{cap/Conclusion.tex}
+\include{cap/Appendices.tex}
+
+%\addcontentsline{toc}{chapter}{Bibliography}
+%\bibliography{cap/references.bib}
+\printbibliography
+\end{document}
