@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.12)  11 SEP 2025 12:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.12)  12 SEP 2025 17:11
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1132,7 +1132,7 @@ Package hyperref Info: Link coloring OFF on input line 90.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \c@lstlisting=\count487
-<img/units_simbl.png, id=224, 168.63pt x 232.87pt>
+<img/units_simbl.png, id=228, 168.63pt x 232.87pt>
 File: img/units_simbl.png Graphic file (type png)
 <use img/units_simbl.png>
 Package pdftex.def Info: img/units_simbl.png  used on input line 94.
@@ -1175,12 +1175,12 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 ]
 Chapter 2.
-<img/RoverRoboticsMini.png, id=334, 421.575pt x 248.93pt>
+<img/RoverRoboticsMini.png, id=340, 421.575pt x 248.93pt>
 File: img/RoverRoboticsMini.png Graphic file (type png)
 <use img/RoverRoboticsMini.png>
 Package pdftex.def Info: img/RoverRoboticsMini.png  used on input line 15.
 (pdftex.def)             Requested size: 170.71393pt x 100.80469pt.
-<img/jobot_robot.jpg, id=335, 963.6pt x 1284.8pt>
+<img/jobot_robot.jpg, id=341, 963.6pt x 1284.8pt>
 File: img/jobot_robot.jpg Graphic file (type jpg)
 <use img/jobot_robot.jpg>
 Package pdftex.def Info: img/jobot_robot.jpg  used on input line 23.
@@ -1210,34 +1210,34 @@ Overfull \hbox (25.23451pt too wide) in paragraph at lines 7--8
 [11
 
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<img/life_cycle_sm_nf.png, id=373, 1270.7475pt x 1245.65375pt>
+<img/life_cycle_sm_nf.png, id=378, 1270.7475pt x 1245.65375pt>
 File: img/life_cycle_sm_nf.png Graphic file (type png)
 <use img/life_cycle_sm_nf.png>
 Package pdftex.def Info: img/life_cycle_sm_nf.png  used on input line 19.
 (pdftex.def)             Requested size: 426.79134pt x 418.36574pt.
  [12 <./img/life_cycle_sm_nf.png>]
-<img/Topic.png, id=384, 642.90187pt x 361.35pt>
+<img/Topic.png, id=389, 642.90187pt x 361.35pt>
 File: img/Topic.png Graphic file (type png)
 <use img/Topic.png>
 Package pdftex.def Info: img/Topic.png  used on input line 26.
 (pdftex.def)             Requested size: 238.45241pt x 134.02272pt.
-<img/Service.png, id=385, 642.90187pt x 361.35pt>
+<img/Service.png, id=390, 642.90187pt x 361.35pt>
 File: img/Service.png Graphic file (type png)
 <use img/Service.png>
 Package pdftex.def Info: img/Service.png  used on input line 32.
 (pdftex.def)             Requested size: 238.45241pt x 134.02272pt.
-<img/Action.png, id=386, 1445.4pt x 813.0375pt>
+<img/Action.png, id=391, 1445.4pt x 813.0375pt>
 File: img/Action.png Graphic file (type png)
 <use img/Action.png>
 Package pdftex.def Info: img/Action.png  used on input line 39.
 (pdftex.def)             Requested size: 238.45241pt x 134.12059pt.
  [13 <./img/Topic.png> <./img/Service.png> <./img/Action.png>]
-<img/rviz.png, id=398, 1927.2pt x 1084.05pt>
+<img/rviz.png, id=403, 1927.2pt x 1084.05pt>
 File: img/rviz.png Graphic file (type png)
 <use img/rviz.png>
 Package pdftex.def Info: img/rviz.png  used on input line 53.
 (pdftex.def)             Requested size: 170.71393pt x 96.02194pt.
-<img/rviz2.png, id=399, 1317.92375pt x 708.6475pt>
+<img/rviz2.png, id=404, 1317.92375pt x 708.6475pt>
 File: img/rviz2.png Graphic file (type png)
 <use img/rviz2.png>
 Package pdftex.def Info: img/rviz2.png  used on input line 57.
@@ -1253,19 +1253,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 48--61
  []
 
 [14 <./img/rviz.png> <./img/rviz2.png>]
-<img/gazebo1.png, id=411, 1927.2pt x 1132.23pt>
+<img/gazebo1.png, id=416, 1927.2pt x 1132.23pt>
 File: img/gazebo1.png Graphic file (type png)
 <use img/gazebo1.png>
 Package pdftex.def Info: img/gazebo1.png  used on input line 77.
 (pdftex.def)             Requested size: 170.71393pt x 100.2896pt.
-<img/gazebo2.png, id=412, 1456.44125pt x 921.4425pt>
+<img/gazebo2.png, id=417, 1456.44125pt x 921.4425pt>
 File: img/gazebo2.png Graphic file (type png)
 <use img/gazebo2.png>
 Package pdftex.def Info: img/gazebo2.png  used on input line 81.
 (pdftex.def)             Requested size: 170.71393pt x 107.99533pt.
  [15 <./img/gazebo1.png> <./img/gazebo2.png>]
 Chapter 5.
-<img/nav2_architecture.png, id=426, 963.6pt x 602.25pt>
+<img/nav2_architecture.png, id=431, 963.6pt x 602.25pt>
 File: img/nav2_architecture.png Graphic file (type png)
 <use img/nav2_architecture.png>
 Package pdftex.def Info: img/nav2_architecture.png  used on input line 93.
@@ -1273,7 +1273,7 @@ Package pdftex.def Info: img/nav2_architecture.png  used on input line 93.
 [16
 
  <./img/nav2_architecture.png (PNG copy)>]
-<img/bt_nav2_neg.humble.png, id=440, 1283.79625pt x 747.79375pt>
+<img/bt_nav2_neg.humble.png, id=445, 1283.79625pt x 747.79375pt>
 File: img/bt_nav2_neg.humble.png Graphic file (type png)
 <use img/bt_nav2_neg.humble.png>
 Package pdftex.def Info: img/bt_nav2_neg.humble.png  used on input line 110.
@@ -1285,7 +1285,7 @@ on \T1/cmtt/m/n/10.95 navigate_to_pose_w_replanning_and_recovery.xml
  []
 
 [17 <./img/bt_nav2_neg.humble.png>]
-<img/Alg_Cartographer.png, id=455, 963.6pt x 722.7pt>
+<img/Alg_Cartographer.png, id=460, 963.6pt x 722.7pt>
 File: img/Alg_Cartographer.png Graphic file (type png)
 <use img/Alg_Cartographer.png>
 Package pdftex.def Info: img/Alg_Cartographer.png  used on input line 136.
@@ -1305,39 +1305,39 @@ Chapter 7.
 [21
 
 ]
-<img/RMF_struct.png, id=519, 1195.46625pt x 616.3025pt>
+<img/RMF_struct.png, id=524, 1195.46625pt x 616.3025pt>
 File: img/RMF_struct.png Graphic file (type png)
 <use img/RMF_struct.png>
 Package pdftex.def Info: img/RMF_struct.png  used on input line 163.
 (pdftex.def)             Requested size: 341.43436pt x 176.0242pt.
  [22 <./img/RMF_struct.png (PNG copy)>]
-<img/RMF_tut_schedule.png, id=527, 2522.42375pt x 1557.82pt>
+<img/RMF_tut_schedule.png, id=532, 2522.42375pt x 1557.82pt>
 File: img/RMF_tut_schedule.png Graphic file (type png)
 <use img/RMF_tut_schedule.png>
 Package pdftex.def Info: img/RMF_tut_schedule.png  used on input line 181.
 (pdftex.def)             Requested size: 341.43436pt x 210.84334pt.
  [23 <./img/RMF_tut_schedule.png>]
-<img/RMF_tut_BidTask.png, id=536, 1762.585pt x 896.34875pt>
+<img/RMF_tut_BidTask.png, id=541, 1762.585pt x 896.34875pt>
 File: img/RMF_tut_BidTask.png Graphic file (type png)
 <use img/RMF_tut_BidTask.png>
 Package pdftex.def Info: img/RMF_tut_BidTask.png  used on input line 201.
 (pdftex.def)             Requested size: 341.43436pt x 173.63158pt.
 
 [24 <./img/RMF_tut_BidTask.png>]
-<img/RMF_tut_trafficEditor.png, id=543, 2501.345pt x 1426.32875pt>
+<img/RMF_tut_trafficEditor.png, id=548, 2501.345pt x 1426.32875pt>
 File: img/RMF_tut_trafficEditor.png Graphic file (type png)
 <use img/RMF_tut_trafficEditor.png>
 Package pdftex.def Info: img/RMF_tut_trafficEditor.png  used on input line 217.
 
 (pdftex.def)             Requested size: 341.43436pt x 194.67894pt.
-<img/RMF_tut_fleetAdapterTMPL.png, id=546, 1256.695pt x 233.87375pt>
+<img/RMF_tut_fleetAdapterTMPL.png, id=551, 1256.695pt x 233.87375pt>
 File: img/RMF_tut_fleetAdapterTMPL.png Graphic file (type png)
 <use img/RMF_tut_fleetAdapterTMPL.png>
 Package pdftex.def Info: img/RMF_tut_fleetAdapterTMPL.png  used on input line 2
 25.
 (pdftex.def)             Requested size: 341.43436pt x 63.53929pt.
  [25 <./img/RMF_tut_trafficEditor.png> <./img/RMF_tut_fleetAdapterTMPL.png>]
-<img/RMF_tut_web.png, id=557, 2557.555pt x 1193.45876pt>
+<img/RMF_tut_web.png, id=562, 2557.555pt x 1193.45876pt>
 File: img/RMF_tut_web.png Graphic file (type png)
 <use img/RMF_tut_web.png>
 Package pdftex.def Info: img/RMF_tut_web.png  used on input line 234.
@@ -1358,17 +1358,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--11
 
 [28]
 Chapter 8.
-<img/miniPC.jpg, id=578, 1084.05pt x 929.4725pt>
+<img/miniPC.jpg, id=583, 1084.05pt x 929.4725pt>
 File: img/miniPC.jpg Graphic file (type jpg)
 <use img/miniPC.jpg>
 Package pdftex.def Info: img/miniPC.jpg  used on input line 21.
 (pdftex.def)             Requested size: 170.71393pt x 146.36432pt.
-<img/IMU.jpg, id=582, 1084.05pt x 946.53625pt>
+<img/IMU.jpg, id=587, 1084.05pt x 946.53625pt>
 File: img/IMU.jpg Graphic file (type jpg)
 <use img/IMU.jpg>
 Package pdftex.def Info: img/IMU.jpg  used on input line 27.
 (pdftex.def)             Requested size: 170.71393pt x 149.05136pt.
-<img/laserScanRPLIDAR.png, id=588, 235.88126pt x 207.77625pt>
+<img/laserScanRPLIDAR.png, id=593, 235.88126pt x 207.77625pt>
 File: img/laserScanRPLIDAR.png Graphic file (type png)
 <use img/laserScanRPLIDAR.png>
 Package pdftex.def Info: img/laserScanRPLIDAR.png  used on input line 36.
@@ -1376,19 +1376,19 @@ Package pdftex.def Info: img/laserScanRPLIDAR.png  used on input line 36.
 [29
 
  <./img/miniPC.jpg>] [30 <./img/IMU.jpg> <./img/laserScanRPLIDAR.png>]
-<img/RoverwithSensor.jpg, id=607, 812.03375pt x 641.39626pt>
+<img/RoverwithSensor.jpg, id=613, 812.03375pt x 641.39626pt>
 File: img/RoverwithSensor.jpg Graphic file (type jpg)
 <use img/RoverwithSensor.jpg>
 Package pdftex.def Info: img/RoverwithSensor.jpg  used on input line 43.
 (pdftex.def)             Requested size: 170.71393pt x 134.8342pt.
-<img/modelWithTFtree.png, id=608, 1065.9825pt x 936.49875pt>
+<img/modelWithTFtree.png, id=614, 1065.9825pt x 936.49875pt>
 File: img/modelWithTFtree.png Graphic file (type png)
 <use img/modelWithTFtree.png>
 Package pdftex.def Info: img/modelWithTFtree.png  used on input line 50.
 (pdftex.def)             Requested size: 170.71393pt x 149.97147pt.
 
 [31 <./img/RoverwithSensor.jpg> <./img/modelWithTFtree.png (PNG copy)>]
-<img/robot_in_simulation.png, id=617, 1856.9375pt x 1177.39874pt>
+<img/robot_in_simulation.png, id=622, 1856.9375pt x 1177.39874pt>
 File: img/robot_in_simulation.png Graphic file (type png)
 <use img/robot_in_simulation.png>
 Package pdftex.def Info: img/robot_in_simulation.png  used on input line 65.
@@ -1429,7 +1429,7 @@ Overfull \hbox (6.25427pt too wide) in paragraph at lines 81--88
 [33
 
 ]
-<img/odom_wheel_filter.png, id=635, 1172.38pt x 859.21pt>
+<img/odom_wheel_filter.png, id=640, 1172.38pt x 859.21pt>
 File: img/odom_wheel_filter.png Graphic file (type png)
 <use img/odom_wheel_filter.png>
 Package pdftex.def Info: img/odom_wheel_filter.png  used on input line 96.
@@ -1470,7 +1470,7 @@ Overfull \hbox (10.9913pt too wide) in paragraph at lines 104--111
  []
 
 [34 <./img/odom_wheel_filter.png>] [35]
-<img/map.png, id=658, 1969.3575pt x 3074.48625pt>
+<img/map.png, id=663, 1969.3575pt x 3074.48625pt>
 File: img/map.png Graphic file (type png)
 <use img/map.png>
 Package pdftex.def Info: img/map.png  used on input line 117.
@@ -1488,7 +1488,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 113--130
  []
 
 [36 <./img/map.png>]
-<img/mapV.png, id=665, 1969.3575pt x 3074.48625pt>
+<img/mapV.png, id=670, 1969.3575pt x 3074.48625pt>
 File: img/mapV.png Graphic file (type png)
 <use img/mapV.png>
 Package pdftex.def Info: img/mapV.png  used on input line 136.
@@ -1568,7 +1568,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 270--271
  []
 
 [43]
-<img/jobot_tf_strucure.png, id=738, 1134.2375pt x 831.105pt>
+<img/jobot_tf_strucure.png, id=743, 1134.2375pt x 831.105pt>
 File: img/jobot_tf_strucure.png Graphic file (type png)
 <use img/jobot_tf_strucure.png>
 Package pdftex.def Info: img/jobot_tf_strucure.png  used on input line 283.
@@ -1578,7 +1578,7 @@ Chapter 11.
 [45
 
 ] [46]
-<img/RMF-traffic-map.png, id=762, 1856.9375pt x 1177.39874pt>
+<img/RMF-traffic-map.png, id=767, 1856.9375pt x 1177.39874pt>
 File: img/RMF-traffic-map.png Graphic file (type png)
 <use img/RMF-traffic-map.png>
 Package pdftex.def Info: img/RMF-traffic-map.png  used on input line 325.
@@ -1593,7 +1593,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 322--337
  []
 
 [47 <./img/RMF-traffic-map.png>]
-<img/rmf_generated_world.png, id=770, 1856.9375pt x 1177.39874pt>
+<img/rmf_generated_world.png, id=775, 1856.9375pt x 1177.39874pt>
 File: img/rmf_generated_world.png Graphic file (type png)
 <use img/rmf_generated_world.png>
 Package pdftex.def Info: img/rmf_generated_world.png  used on input line 342.
@@ -1614,7 +1614,7 @@ Overfull \hbox (7.2887pt too wide) in paragraph at lines 360--361
 it-ted task to the best fleet/robot
  []
 
-<img/free_fleet_adapter.png, id=781, 1229.59375pt x 468.75125pt>
+<img/free_fleet_adapter.png, id=786, 1229.59375pt x 468.75125pt>
 File: img/free_fleet_adapter.png Graphic file (type png)
 <use img/free_fleet_adapter.png>
 Package pdftex.def Info: img/free_fleet_adapter.png  used on input line 372.
@@ -1631,14 +1631,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 392--397
  []
 
 [50]
-<img/openRMF-dashboard.png, id=800, 1856.9375pt x 1062.97125pt>
+<img/openRMF-dashboard.png, id=805, 1856.9375pt x 1062.97125pt>
 File: img/openRMF-dashboard.png Graphic file (type png)
 <use img/openRMF-dashboard.png>
 Package pdftex.def Info: img/openRMF-dashboard.png  used on input line 412.
 (pdftex.def)             Requested size: 426.79134pt x 244.29984pt.
  [51 <./img/openRMF-dashboard.png>]
 Chapter 12.
-<img/problem_chair.jpg, id=808, 1284.8pt x 963.6pt>
+<img/problem_chair.jpg, id=813, 1284.8pt x 963.6pt>
 File: img/problem_chair.jpg Graphic file (type jpg)
 <use img/problem_chair.jpg>
 Package pdftex.def Info: img/problem_chair.jpg  used on input line 423.
@@ -1646,7 +1646,7 @@ Package pdftex.def Info: img/problem_chair.jpg  used on input line 423.
 [52
 
  <./img/problem_chair.jpg>]
-<img/mapComposizione.png, id=814, 1969.3575pt x 3074.48625pt>
+<img/mapComposizione.png, id=819, 1969.3575pt x 3074.48625pt>
 File: img/mapComposizione.png Graphic file (type png)
 <use img/mapComposizione.png>
 Package pdftex.def Info: img/mapComposizione.png  used on input line 442.
@@ -1665,7 +1665,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 ]
 Chapter 13.
-<img/Dstar_plan_ufficio_ripostiglio.png, id=830, 809.0225pt x 645.41125pt>
+<img/Dstar_plan_ufficio_ripostiglio.png, id=835, 809.0225pt x 645.41125pt>
 File: img/Dstar_plan_ufficio_ripostiglio.png Graphic file (type png)
 <use img/Dstar_plan_ufficio_ripostiglio.png>
 Package pdftex.def Info: img/Dstar_plan_ufficio_ripostiglio.png  used on input 
@@ -1703,13 +1703,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 89--90
 
  []
 
-<img/Dstar_plan_ufficio_ingresso.png, id=849, 715.67375pt x 432.61626pt>
+<img/Dstar_plan_ufficio_ingresso.png, id=854, 715.67375pt x 432.61626pt>
 File: img/Dstar_plan_ufficio_ingresso.png Graphic file (type png)
 <use img/Dstar_plan_ufficio_ingresso.png>
 Package pdftex.def Info: img/Dstar_plan_ufficio_ingresso.png  used on input lin
 e 94.
 (pdftex.def)             Requested size: 170.71718pt x 103.1963pt.
-<img/Dstar_plan_disegnatori_ingresso.png, id=850, 1078.0275pt x 628.3475pt>
+<img/Dstar_plan_disegnatori_ingresso.png, id=855, 1078.0275pt x 628.3475pt>
 File: img/Dstar_plan_disegnatori_ingresso.png Graphic file (type png)
 <use img/Dstar_plan_disegnatori_ingresso.png>
 Package pdftex.def Info: img/Dstar_plan_disegnatori_ingresso.png  used on input
@@ -1718,13 +1718,13 @@ Package pdftex.def Info: img/Dstar_plan_disegnatori_ingresso.png  used on input
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<img/Navfn_plan_disegnatori_ingresso.png, id=851, 1043.9pt x 374.39874pt>
+<img/Navfn_plan_disegnatori_ingresso.png, id=856, 1043.9pt x 374.39874pt>
 File: img/Navfn_plan_disegnatori_ingresso.png Graphic file (type png)
 <use img/Navfn_plan_disegnatori_ingresso.png>
 Package pdftex.def Info: img/Navfn_plan_disegnatori_ingresso.png  used on input
  line 108.
 (pdftex.def)             Requested size: 170.71718pt x 61.22469pt.
-<img/Navfn_plan_ufficio_ingresso.png, id=852, 1069.9975pt x 398.48875pt>
+<img/Navfn_plan_ufficio_ingresso.png, id=857, 1069.9975pt x 398.48875pt>
 File: img/Navfn_plan_ufficio_ingresso.png Graphic file (type png)
 <use img/Navfn_plan_ufficio_ingresso.png>
 Package pdftex.def Info: img/Navfn_plan_ufficio_ingresso.png  used on input lin
@@ -1786,15 +1786,8 @@ Overfull \hbox (5.11417pt too wide) in paragraph at lines 133--133
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-Package rerunfilecheck Warning: File `tesi.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `tesi.out':
-(rerunfilecheck)             Before: BE789D89E3CDF1E3D3FF9226FE2BA07F;11398
-(rerunfilecheck)             After:  8338C24117B5E3D80DF93DB1252BBD8C;11609.
+Package rerunfilecheck Info: File `tesi.out' has not changed.
+(rerunfilecheck)             Checksum: 8338C24117B5E3D80DF93DB1252BBD8C;11609.
 runsystem(rm tesi.pyg)...executed.
 
 Package logreq Info: Writing requests to 'tesi.run.xml'.
@@ -1802,10 +1795,10 @@ Package logreq Info: Writing requests to 'tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 34364 strings out of 476182
- 665458 string characters out of 5795595
+ 34365 strings out of 476182
+ 665472 string characters out of 5795595
  1936975 words of memory out of 5000000
- 55582 multiletter control sequences out of 15000+600000
+ 55583 multiletter control sequences out of 15000+600000
  575614 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  114i,9n,115p,1885b,1503s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1826,10 +1819,10 @@ super/sfrm2488.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1200.pfb><
 /usr/share/texmf/fonts/type1/public/cm-super/sftt1095.pfb></usr/share/texmf/fon
 ts/type1/public/cm-super/sftt1200.pfb></usr/share/texmf/fonts/type1/public/cm-s
 uper/sftt1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1728.pfb>
-Output written on tesi.pdf (69 pages, 13099975 bytes).
+Output written on tesi.pdf (69 pages, 13100090 bytes).
 PDF statistics:
- 1092 PDF objects out of 1200 (max. 8388607)
- 894 compressed objects within 9 object streams
+ 1096 PDF objects out of 1200 (max. 8388607)
+ 898 compressed objects within 9 object streams
  236 named destinations out of 1000 (max. 500000)
- 650 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 658 words of extra memory for PDF output out of 10000 (max. 10000000)
 
