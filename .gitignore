@@ -1,4 +1,6 @@
 latex/cap/*.aux
+latex/tesi-blx.bib
+latex/tesi.aux
 latex/tesi.bit 
 latex/tesi.blg 
 latex/tesi.bbl 
@@ -16,8 +18,6 @@ latex/tesi.out
 latex/tesi.url 
 latex/tesi.svn 
 latex/tesi.toc
-latex/tesi.aux
-latex/tesi-blx.bib
 latex/tesi.fdb_latexmk
 latex/tesi.synctex.gz
 latex/tesi.run.xml
