@@ -576,6 +576,7 @@ That stop with an error
 
 
 \subsection{setting the ekf of the jobot}
+In both record the robot after a door in the record make a "jump" with rotation to the right visible in the odometry, this can be caused that in that position there is a holding position for the anti flame door. 
  from the firsts test it look like no much correction it need for the movment, it has only an hight error in the heading so the test where performed 
 \begin{table}[h]
 	\centering
@@ -583,23 +584,23 @@ That stop with an error
 		\hline
 		$v_{yaw}$ & record name & diff start end (m) \\
 		\hline
-		0.001 & 000 & 14.28\\
+		- & 000 & 14.28\\
 		\hline
-		0.01 & 001& 32.67\\
+		- & 001& 32.67\\
 		\hline
 		0.1 & 002 & 13.88\\
 		\hline
 		10.0 & 003 & 13.26\\
 		\hline
-		50.0 & 004 & 8.74\\
+		100.0 & 004 & 8.74\\
 		\hline
-		0.1 & 007 & 4.31\\
+		200.0 & 007 & 4.31\\
 		\hline
-		10.0 & 008 & 1.83\\
+		300.0 & 008 & 1.83\\
 		\hline
-		50.0 & 009 & 3.50\\
+		400.0 & 009 & 3.50\\
 		\hline
-		 0.001 & 012 & 1.63\\
+		 320.0 & 012 & 1.63\\
 		\hline
 	\end{tabular}
 	\caption{result planner first request}
@@ -641,7 +642,60 @@ At the end we obtain this best result.\\
 \end{figure}
 
 \section{Navigation errors}
+Calibrating the Q now we have to correct to have the correct position also in function of the map, like described before. This compesnsate all the error given by not correct odometry estimation.
+In this section we will edit the $\alpha$ parameters ans see the output. 
+This parameters are:
+
+\begin{itemize}
+	\item $\alpha 1$ : Expected process noise in odometry’s rotation estimate from rotation.
+	\item $\alpha 2$ : Expected process noise in odometry’s rotation estimate from translation. 
+	\item $\alpha 3$ : Expected process noise in odometry’s translation estimate from translation.
+	\item $\alpha 4$ : Expected process noise in odometry’s translation estimate from translation.
+\end{itemize}
+
+The also other parameters is going to be tested. but this are first to look for changing  dinamics.
+
 \subsection{setting the amcl of the mini}
+this test were performed on record 007 of the mini, the start position is about 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		$\alpha 1$ & $\alpha 2$ & $\alpha 3$ & $\alpha 4$ & distance (m) & data name\\
+		\hline
+		0 & 0 & 0 & 0 & 1.92 &  - \\
+		\hline
+		0.001 & 0 & 0 & 0 & 1.19 & 000 \\
+		\hline
+		0.01 & 0 & 0 & 0 & 1.15 & 001 \\
+		\hline
+		0.1 & 0 & 0 & 0 & 1.18 & 002 \\
+		\hline
+		0 & 0.001 & 0 & 0 & 1.11 & 003 \\
+		\hline
+		0 & 0.1 & 0 & 0 & 0.98 & 004 \\
+		\hline
+		0 & 0 & 0.001 & 0 & 2.07 & 005 \\
+		\hline
+		0 & 0 & 0.01 & 0 & 2.52 & 006 \\
+		\hline
+		0 & 0 & 0.1 & 0 & 3.31 & 007 \\
+		\hline
+		0 & 0 & 0 & 0.1 & 2.4  & 008 \\
+		\hline
+		0.01 & 0.01 & 0.01 & 0.0001 & 1.04 & 009 \\
+		\hline
+		0.01 & 0.01 & 0.1 & 0.0001 & 1.14 & 010 \\
+		\hline
+		0.01 & 0.0001 & 0.1 & 0.0001 & 2.82 & 011 \\
+		\hline
+	\end{tabular}
+	\caption{result planner first request}
+\end{table}
+
+the first row is the data from odometry and nothing more.
+
+
 \subsection{setting the amcl of the jobot}
 
 this is the data obtained with the 
