@@ -477,26 +477,202 @@ In the next section we will descibe our procedure and how we tune them for the m
 \subsection{setting the ekf of the mini}
 
 For the mini, that has and IMU and the odometry from the robot as data aviable from the sensors we choose to use only the $v_{yaw}$ of the gyroscope and the $v_x$ and $v_y$ from the odometry because the $yaw$ angle given by the orientation msg of the IMU have some random changing values:
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/comparazione_heading_with_yawVel.png}
-	\captionof{figure}{Heading result given by the sensors}
-\end{figure}
-and so the acceleration from the IMU cannot be properly inserted because was adding a shifting to the position.\\
+and also the acceleration from the IMU was not be possible used because was adding a shift to the position.\\
 
 More information on the sensor data used are the frequency of the topics:\\
-
 \texttt{/odometry/wheels} : 15 Hz\\
 \texttt{/imu/data} : 100 Hz\\
 
-And we obtain without tuning:
+And we obtain, without tuning:
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/odom_plot_before_changes.png}
-	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package}
+	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package (green)}
 \end{figure}
 
+Was also tried to adding the $V_{yaw}$ of the odometry of the robot but it incremented the error
+
+The sensor avaible are:
+IMU
+\begin{itemize}
+	\item orientation : cannot be used for an error from the sensor as visible in this picture
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/comparazione_heading_with_yawVel.png}
+		\captionof{figure}{Heading result given by the sensors}
+	\end{figure}
+	\item gyroscopic : only real information about how the robot move, we take all the information about $v_{yaw}$
+	\item acceleration : add a shifting position to the odometry can increment only the error
+\end{itemize}
+odometry
+\begin{itemize}
+	\item pose : as visible from the picture is not good so we update it using the localization node
+	\item velocity : input given to the robot and the direct information about velocity, we will take $v_{x}$ and $v_{y}$
+\end{itemize}
+
+Using that input we tried changing the value of the process noise covariance $Q$ tring to obtain the best result for the different records, this test were performed using the record 001 where the start position is inside the office and the end is outside the door of the office ( a distance of 3 m ) with a total length of about 187 m :
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		$v_x$ & $v_y$ & $v_{yaw}$ & record name & diff start end (m) \\
+		\hline
+		0.001 & 0.001 & 0.001 & 000& 12.36\\
+		\hline
+		0.01 & 0.01 & 0.01 & 001& 5.88\\
+		\hline
+		0.1 & 0.1 & 0.1 & 002& 5.10\\
+		\hline
+		10.0 & 10.0 & 10.0 & 003& 4.37\\
+		\hline
+		50.0 & 50.0 & 50.0 & 004& 4.31\\
+		\hline
+		0.001 & 0.001 & 0.1 & 005& 4.83\\
+		\hline
+		0.001 & 0.001 & 10.0 & 006& 4.33\\
+		\hline
+		0.001 & 0.001 & 50.0 & 007& 4.27\\
+		\hline
+		0.001 & 0.1 & 0.001 & 008& 5.88\\
+		\hline
+		0.001 & 10.0 & 0.001 & 009& 5.88\\
+		\hline
+		0.001 & 50.0 & 0.001 & 010& 5.88\\
+		\hline
+		0.1 & 0.001 & 0.001 & 011& 5.94\\
+		\hline
+		10.0 & 0.001 & 0.001 & 012& 5.94\\
+		\hline
+		50.0 & 0.001 & 0.001 & 013& 5.97\\
+		\hline
+	\end{tabular}
+	\caption{result planner first request}
+\end{table}
+
+The plotted result are the following: 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/plot_odom_withVyawOdom_01.png}
+	\captionof{figure}{Results record 005}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/all_ekf_estimation.png}
+	\captionof{figure}{Results changing parameters of the process noise covariance using the record 001}
+\end{figure}
+
+
+whit the following best result:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/result_001_ekf.png}
+	\captionof{figure}{Best result with 001 with the information of the map "acquired"}
+\end{figure}
+
+That stop with an error 
+
+
+\subsection{setting the ekf of the jobot}
+ from the firsts test it look like no much correction it need for the movment, it has only an hight error in the heading so the test where performed 
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		$v_{yaw}$ & record name & diff start end (m) \\
+		\hline
+		0.001 & 000 & 14.28\\
+		\hline
+		0.01 & 001& 32.67\\
+		\hline
+		0.1 & 002 & 13.88\\
+		\hline
+		10.0 & 003 & 13.26\\
+		\hline
+		50.0 & 004 & 8.74\\
+		\hline
+		0.1 & 007 & 4.31\\
+		\hline
+		10.0 & 008 & 1.83\\
+		\hline
+		50.0 & 009 & 3.50\\
+		\hline
+		 0.001 & 012 & 1.63\\
+		\hline
+	\end{tabular}
+	\caption{result planner first request}
+\end{table}
+
+Measure where performed with only $yaw$ 000, $V_{yaw}$ gyro 001, $V_{yaw}$ gyro and $V_{yaw}$ odom from the 002 and down.
+The best result is with a coefficient of 320 with both the measure of velocity.
+
+In this image is visible the data obtained in record 000 with only yaw and we see also changing the value of the coefficien matrix that the value doesnt change with also the Vyaw inserted\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/with_yaw.png}
+	\captionof{figure}{with\_yaw}
+\end{figure}
+
+Then it was decided to remove it and see the result with the Vyaw of the imu\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/jobot_only_imu_Vyaw_bassa.png}
+	\captionof{figure}{jobot\_only\_imu\_Vyaw\_bassa}
+\end{figure}
+the result are over exagerated. at the end we sum up the both of them to obtain \\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/with_both_Vyaw.png}
+	\captionof{figure}{with\_both\_Vyaw}
+\end{figure}
+that was promising and we change the value of the coessicient like in the table.
+At the end we obtain this best result.\\
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{img/final_best.png}
+\captionof{figure}{final\_best}
+\end{figure}
+
+\section{Navigation errors}
+\subsection{setting the amcl of the mini}
+\subsection{setting the amcl of the jobot}
+
+this is the data obtained with the 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/record1.png}
+	\captionof{figure}{record1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{img/record2.png}
+\captionof{figure}{record2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{img/posizione giusta.png}
+\captionof{figure}{posizione giusta}
+\end{figure}
+
+
+\section{Navigation errors}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/problem_local_planner_jobot.png}
+	\captionof{figure}{problem\_local\_planner\_jobot}
+\end{figure}
 
 
 \section{External enviromets detail}
