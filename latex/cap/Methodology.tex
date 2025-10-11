@@ -403,44 +403,56 @@ Then we can connect to the web dashboard:
 
 \chapter{Testing and evaluation of the system}
 
-During the testing, we saw that the performance of the odometry and the localization were need to be imporved with some parameters tuning.
-in the following paragraphers it will describe the method used and the parameters behaviour comparisation. In the first we describe how the test were performed, then the behavior of the prameters on the robot\_localization node for improve the odometry estimation and the correction that the amcl node in function of its parameters.
-
+During the testing, we saw that the performance of odometry and localization were need to be improved with some parameters tuning.
+In the following paragraphs it will describe the method used and the changing parameters behavior on the output.
+We divided in two parts, the first is based on improving the estimation of the odometry, changing the parameters of the robot\_localization package without the correction of the AMCL node. Then, in the second part, using the new odometry, we setting the parameters for the AMCL node to estimate the real position of the robot in respect of the map.
+All is done using some recorder sensor data using the rosbag package described in the next section.
 
 \section{Testing environment using Rosbag}
-For allow a fast approach on setting the parameters, was chose to record the data given from the robots and from their sensors using the tool Rosbag2
-\footnote{\href{https://github.com/ros2/rosbag2}{https://github.com/ros2/rosbag2}} that allow to record and playback the communications in a ROS 2 system efficiently. 
+To allow a better comparisation of the output results obtained changing the parameters we need a method to record the data and replay them. This solution in ROS ecosystem is the tool Rosbag2
+\footnote{\href{https://github.com/ros2/rosbag2}{https://github.com/ros2/rosbag2}} that allow to record and playback the communications in a ROS 2 system efficiently.\\
 
-We choose some path that the robots should have followed and using the /cmd\_vel topic we moved them along the building T of Elettra. We followed this paths for the mini:\\
+Also we controlled the robots publishing on the \texttt{/cmd\_vel} along the building following some path that can be interesting to be analyses.\\
+For the mini we followed this path for the changing of the parameters for the \texttt{robot\_localization} package, it's a long path and there is more turns:\\
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/record_001_path_mini.png}
-	\captionof{figure}{path followed during record 001 for the mini}
+	\captionof{figure}{path followed in record 001 for the mini}
 \end{figure}
 
-while for the jobot the path is the following one:\\
+and this for setting the parameters for the AMCL node, because on the right side of the door, along the corridor, the door are closed:
 
-\begin{figure}[h]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/record_007_path_mini.png}
+	\captionof{figure}{path followed in record 007 for the mini}
+\end{figure}
+
+while for the Jobot the path is the following one, it has similarities with both of the mini but also we saw better performance of the robot odometry, so it was not necessary to hard test the system:\\
+
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/record_001_path_jobot.png}
 	\captionof{figure}{path followed during record 001 for the jobot}
 \end{figure}
 
-other recorder were made for validating the parameter selection. To record the data we use the command \texttt{ros2 bag record}.
-For playing that data, we need to make publish to the \texttt{/clock} topic to avoid errors related to the difference in time of the recorded data and the system time : \texttt{the timestamp on the message is earlier than all the data in the transform cache}. This is available by the rosbag2 using the flag \texttt{--clock} that publish to \texttt{/clock} at a specific frequency. 
+other recorder were made for validating the parameter choises.\\
+To record the data we use the command \texttt{ros2 bag record}.
+While or playing that data, we need to make publish to the \texttt{/clock} topic to avoid errors related to the difference in time of the recorded data and the system time : \texttt{"the timestamp on the message is earlier than all the data in the transform cache"}. This is available by the rosbag2 using the flag \texttt{--clock} that publish to \texttt{/clock}. This required to use the flag \texttt{use\_sim\_time} for all the nodes, like in simulation. 
 
-Also for reducing the time to test we play the data with a rate 5 time with the following flag \texttt{-r 5} , this flag increase the output rate of each topic by 5 times. Test were performed with a rate of 1 and 5 for multiple record and the output show that the results of the robot\_localization and for the amcl were a lot similar in the two cases.\\
+Also allow to reduce the time to test, we played the data with a rate 5 time higher with the following flag \texttt{-r 5} for the \texttt{robot\_localization} while for the AMCL with 2, this flag increase the output rate of each topic by n times. Tests were performed with a rate of 1 and 5 for multiple record and the output show that the results of the robot\_localization were similar and also in the case of the AMCL tests.\\
 
-Now that we set the testing environment, the process of setting the parameters for the \texttt{robot\_localization} node.
+Now that we set the testing environment, the process of setting the parameters for the \texttt{robot\_localization} package is the follow.
 
 
-\section{Parameters setting for the \texttt{robot\_localization} node}
+\section{Parameters setting for the \texttt{robot\_localization}}
 
-For the analysis of the data of the \texttt{robot\_localization} we wanted that to visualize them in a clear way and without that amcl node influencing the visualization of the result of the \texttt{robot\_localization} node, so we set all the $\alpha$ parameters to 0.0 of the amcl node. This allow us to visualize the position of the walls during the movements of the robot allowing to better understand his position and the type of error that the odometry generates. when done the first correction and fixed the AMCL, then it possible to visualize the data of correction and see if our deduction where correct.
+For the analysis of the data of the \texttt{robot\_localization} we wanted to visualize the result of the \texttt{robot\_localization} node without the influency of the AMCL node, so we set all the $\alpha$ parameters that define the behavior of the AMCL node to 0.0. This allow us to visualize the position of the walls during the movements of the robot allowing to better understand his position and the type of error that the odometry has.
 
-As described before, the \texttt{robot\_localization} contains an implementation of the extended Kalman filter that support multiple sensors and allow the user to select with data fields are fused with the current state estimation. Also since the process noise covariance matrix $Q$ can be difficult to tune, so it's given as parameters.\\
-The theory behind is that we want to know the state $x$, given a non liner system $f$ with process noise $w$:
+As described before, the \texttt{robot\_localization} contains an implementation of the extended Kalman filter that support multiple sensors and allow us to select with data fields are fused with the current state estimation and also gives the process noise covariance matrix $Q$ has a parameter to tuning it obtaining better performances.\\
+To better understand the dynamic of our changes in the parameters we describe in the following row the theory behind it.\\
+We want to know the state $x$, given a non liner system $f$ with process noise $w$:
 \begin{align}
 	x_k &= f(x_{k-1})+w_{k-1}
 \end{align}
@@ -472,7 +484,9 @@ where:\\
 - $R$ is the measurement noise covariance.\\
 - $K$ is the Kalman gain.\\
 
-In the next section we will descibe our procedure and how we tune them for the mini and for the jobot.
+In short words, the better the \textbf{omnidirectional motion model} of the \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process\_noise\_covariance diagonal value for the variable in question, which will cause the filter's predicted error to be larger, which will cause the filter to trust the incoming measurement more during correction.
+
+In the next sections we described our procedure to tune them for the mini and for the Jobot.
 
 \subsection{setting the ekf of the mini}
 
@@ -638,6 +652,7 @@ At the end we obtain this best result.\\
 \centering
 \includegraphics[width=0.9\linewidth]{img/final_best.png}
 \captionof{figure}{Ottimal result obtained visualized in Rviz}
+\label{Ottimal result obtained visualized in Rviz}
 \end{figure}
 
 The complete plot is:
@@ -646,7 +661,7 @@ The complete plot is:
 	\includegraphics[width=0.9\linewidth]{img/jobot_ekf_full.png}
 	\captionof{figure}{Some results plotted for the jobot setting parameter}
 \end{figure}
-\section{Navigation errors}
+\section{Parameter tuning for the AMCL}
 Calibrating the Q now we have to correct to have the correct position also in function of the map, like described before. This compesnsate all the error given by not correct odometry estimation.
 In this section we will edit the $\alpha$ parameters ans see the output. 
 This parameters are:
@@ -679,26 +694,26 @@ this are the result:
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
 		$\alpha 1$ & $\alpha 2$ & $\alpha 3$ & $\alpha 4$ & distance (m) & data name\\
+		\hline		
+		0.0 & 0.0 & 0.0 & 0.0 & 1.92 &  - \\
 		\hline
-		0 & 0 & 0 & 0 & 1.92 &  - \\
+		0.001 & 0.0 & 0.0 & 0.0 & 1.32 & 000 \\
 		\hline
-		0.001 & 0 & 0 & 0 & 1.32 & 000 \\
+		0.01 & 0.0 & 0.0 & 0.0 & 0.60 & 001 \\
 		\hline
-		0.01 & 0 & 0 & 0 & 0.60 & 001 \\
+		0.1 & 0.0 & 0.0 & 0.0 & 0.64 & 002 \\
 		\hline
-		0.1 & 0 & 0 & 0 & 0.64 & 002 \\
+		0.0 & 0.001 & 0.0 & 0.0 & 0.58 & 003 \\
 		\hline
-		0 & 0.001 & 0 & 0 & 0.58 & 003 \\
+		0.0 & 0.1 & 0.0 & 0.0 & 0.51 & 004 \\
 		\hline
-		0 & 0.1 & 0 & 0 & 0.51 & 004 \\
+		0.0 & 0.0 & 0.001 & 0.0 & 2.01 & 005 \\
 		\hline
-		0 & 0 & 0.001 & 0 & 2.01 & 005 \\
+		0.0 & 0.0 & 0.01 & 0.0 & 2.27 & 006 \\
 		\hline
-		0 & 0 & 0.01 & 0 & 2.27 & 006 \\
+		0.0 & 0.0 & 0.1 & 0.0 & 2.32 & 007 \\
 		\hline
-		0 & 0 & 0.1 & 0 & 2.32 & 007 \\
-		\hline
-		0 & 0 & 0 & 0.1 & 3.08  & 008 \\
+		0.0 & 0.0 & 0.0 & 0.1 & 3.08  & 008 \\
 		\hline
 		0.01 & 0.01 & 0.01 & 0.0001 & 0.53 & 009 \\
 		\hline
@@ -768,13 +783,51 @@ this is the type of error you can inconter:
 
 \subsection{setting the amcl of the jobot}
 
-this is the data obtained with the 
+As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the error to correct is angular position and this is create during rotation around of axis, so as described for the parameters we need to change the $\alpha 1$ parameter, as descibed before is \textit{Expected process noise in odometry’s rotation estimate from rotation}.
+
+In both the record when the robot passed the door, it "jumped" and create an error in the estimation. We keep that information and see how the amcl package recover from that jump.
+Also the start position and the end one has a difference of aounrd 0.6 m
+
+This time we start with all parameter set to low and increasing the $\alpha 1$ parameter as follow and we describe the results:
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		$\alpha 1$ & $\alpha 2$ & $\alpha 3$ & $\alpha 4$ & distance (m) & data name\\
+		\hline
+		0.0 & 0.0 & 0.0 & 0.0 & 1.63 &  - \\
+		\hline
+		0.001 & 0.0001 & 0.0001 & 0.0001 & 1.58 & 000 \\
+		\hline
+		0.01 & 0.0001 & 0.0001 & 0.0001 & 2.16 & 001 \\
+		\hline
+		0.01 & 0.001 & 0.0001 & 0.0001 & 0.71 & 002 \\
+		\hline
+		0.01 & 0.001 & 0.001 & 0.0001 & 0.87 & 003 \\
+		\hline
+		0.01 & 0.001 & 0.001 & 0.0001 & 0.74 & 004 \\
+		\hline
+		0.01 & 0.001 & 0.001 & 0.001 & 0.59 & 005 \\
+		\hline
+	\end{tabular}
+	\caption{result planner first request}
+\end{table}
+ 
+The data 000 see that the robot didint recover from that jump and also managed a little.
+
+the incrementation of the paramenter in data 001 not reported un impovment, the jump break highlty the system.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/record1.png}
+	\includegraphics[width=0.9\linewidth]{img/amcl_jobot_001.png}
 	\captionof{figure}{record1}
 \end{figure}
+
+we can try to solve this problem with adding fix rotation during translation incrementing parameter $\alpha 2$, record 002. 
+
+we tried to increment $\alpha 3$ to have a better incremention of position error during translation, but added more error to the result.
+
+so the optimal solution is the with:
 
 \begin{figure}[H]
 \centering
@@ -784,7 +837,7 @@ this is the data obtained with the
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\linewidth]{img/posizione giusta.png}
+\includegraphics[width=0.9\linewidth]{img/amcl_jobot_best_plot.png}
 \captionof{figure}{posizione giusta}
 \end{figure}
 
