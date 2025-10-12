@@ -480,51 +480,44 @@ And the correction step:
 \end{align}
 
 where:\\
-- $H$ is the observation matrix, an identity matrix with not zero value on the colums of the measured variables.\\
+- $H$ is the observation matrix.\\
 - $R$ is the measurement noise covariance.\\
 - $K$ is the Kalman gain.\\
 
-In short words, the better the \textbf{omnidirectional motion model} of the \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process\_noise\_covariance diagonal value for the variable in question, which will cause the filter's predicted error to be larger, which will cause the filter to trust the incoming measurement more during correction.
+In short words, the better the \textbf{omnidirectional motion model} of the\\ \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process\_noise\_covariance diagonal value for the variable in question, which will cause the filter's predicted error to be larger, which will cause the filter to trust the incoming measurement more during correction.
 
 In the next sections we described our procedure to tune them for the mini and for the Jobot.
 
-\subsection{setting the ekf of the mini}
+\subsection{Setting up the EKF of the mini}
 
-For the mini, that has and IMU and the odometry from the robot as data aviable from the sensors we choose to use only the $v_{yaw}$ of the gyroscope and the $v_x$ and $v_y$ from the odometry because the $yaw$ angle given by the orientation msg of the IMU have some random changing values:
-and also the acceleration from the IMU was not be possible used because was adding a shift to the position.\\
-
-More information on the sensor data used are the frequency of the topics:\\
-\texttt{/odometry/wheels} : 15 Hz\\
-\texttt{/imu/data} : 100 Hz\\
+The mini gives us data from an IMU and the robot gives its estimated odometry from the robot.
 
 And we obtain, without tuning:
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/odom_plot_before_changes.png}
 	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package (green)}
 \end{figure}
 
-Was also tried to adding the $v_{yaw}$ of the odometry of the robot but it incremented the error.
-
 The sensor avaible are:
-IMU
+IMU (topic \texttt{/imu/data} with a output frequency of 100 Hz)
 \begin{itemize}
-	\item orientation : cannot be used for an error from the sensor as visible in this picture
-	\begin{figure}[h]
+	\item orientation : cannot be used for a random error from the sensor as visible in this picture:
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.9\linewidth]{img/comparazione_heading_with_yawVel.png}
-		\captionof{figure}{Heading result given by the sensors}
+		\captionof{figure}{Heading data from the \texttt{robot\_localization} (light blue), IMU orientation (green) and odometry from the robot (blue) versus the $v_{yaw}$ measured by the gyroscope of the IMU}
 	\end{figure}
-	\item gyroscopic : only real information about how the robot move, we take all the information about $v_{yaw}$
-	\item acceleration : add a shifting position to the odometry can increment only the error
+	\item gyroscopic : we use his data about $v_{yaw}$
+	\item acceleration : added a costant increment of the position and incremented the error, so it was not used.
 \end{itemize}
-odometry
+odometry (topic \texttt{/odometry/wheels} with a output frequency of 15 Hz)
 \begin{itemize}
-	\item pose : as visible from the picture is not good so we update it using the localization node
-	\item velocity : input given to the robot and the direct information about velocity, we will take $v_{x}$ and $v_{y}$
+	\item pose : it is not correct end an added a lot of error in the estimation.
+	\item velocity : it's also the input given to the robot and the direct information about velocity and so we take $v_{x}$ and $v_{y}$ from the data. $v_{yaw}$ was tried to be used but insert a lot of error in the estimation.
 \end{itemize}
 
-Using that input we tried changing the value of the process noise covariance $Q$ tring to obtain the best result for the different records, this test were performed using the record 001 where the start position is inside the office and the end is outside the door of the office ( a distance of about 4 m ) with a total length of about 187 m :
+Choosed the input data to use, we tried changing the value of the process noise covariance $Q$ obtaining the best result for the different records, this test were performed using the record 001 where the start position is inside the office and the end is outside the door of the office (a distance of about 4 m) with a total length of about 187 m :
 
 \begin{table}[H]
 	\centering
@@ -561,37 +554,67 @@ Using that input we tried changing the value of the process noise covariance $Q$
 		50.0 & 0.001 & 0.001 & 013& 5.97\\
 		\hline
 	\end{tabular}
-	\caption{result planner first request}
+	\caption{\texttt{robot\_localization} results for the Mini}
 \end{table}
 
-The plotted result are the following: 
+Some of the results: 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/plot_odom_withVyawOdom_01.png}
-	\captionof{figure}{Results data 005}
+	\captionof{figure}{Results from data 005}
 \end{figure}
 
-while all the test are desplied in the following image:
+All the test are displayed in the next graph:
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/all_ekf_estimation.png}
 	\captionof{figure}{Results changing parameters of the process noise covariance using the record 001}
 \end{figure}
 
-whit the following best result:
+We can saw that the best result are performed incrementing the value of the process covariance matrix for the $v_{yaw}$ while changing the other input has not changed the result. More test were performed with bigger and lower value of those variables but hasn't changed the outcome. So the best result is the following:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/result_001_ekf.png}
-	\captionof{figure}{Best result with 001 with the information of the map "acquired"}
+	\captionof{figure}{Best result for the Mini with the information of walls position}
+	\label{result ekf mini with walls}
 \end{figure}
 
-Where conducted test inserting also the data from the position and the velocity and couse a matrix parameter real big and small, this didnt change the result.
+We can see in the picture \ref{result ekf mini with walls} that the position along the direction estimated by the odometry is wrong, but changing the value in the process noise matrix didn't improved the estimation. This is some correction that the AMCL node is going to fix.
 
-\subsection{setting the ekf of the jobot}
-In both record the robot after a door in the record make a "jump" with rotation to the right visible in the odometry, this can be caused that in that position there is a holding position for the anti flame door. 
- from the firsts test it look like no much correction it need for the movment, it has only an hight error in the heading so the test where performed 
-\begin{table}[h]
+\subsection{Setting up the EKF of the Jobot}
+Similar procedure from the Mini was performed for the Jobot.
+We, also, discovered that in both of the records, the robot while moving through a fire door make a "jump" visible in the odometry, this can be caused by a little step needed for the fire door. 
+From some initial test is visible that the estimation of the length of the path followed by the robot is correct and so we focused our attention on the error in the rotation that is visible.
+
+The data of measure 000 was performed with only the $yaw$ of the odometry of the robot
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/with_yaw.png}
+	\captionof{figure}{Estimation obtained with the $yaw$ of the Jobot's odometry}
+\end{figure}
+
+Saw the result and that the changes on the process noise covariance didn't change the results, was decided to remove it and see the result with the $v_{yaw}$ of only the IMU (data 001):\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/jobot_only_imu_Vyaw_bassa.png}
+	\captionof{figure}{Estimation obtained with only the $v_{yaw}$ of the Jobot's IMU}
+\end{figure}
+
+It over estimate the position so we tried summing the $v_{yaw}$ of the IMU and of the odometry given by Jobot (data 002):\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/with_both_Vyaw.png}
+	\captionof{figure}{Estimation obtained with both the $v_{yaw}$}
+\end{figure}
+
+Since this was the best outcome, we decided to change the process noise covariance.\\ All the result are:
+
+\begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
@@ -613,58 +636,35 @@ In both record the robot after a door in the record make a "jump" with rotation 
 		\hline
 		400.0 & 009 & 3.50\\
 		\hline
-		 320.0 & 012 & 1.63\\
+		320.0 & 012 & 1.63\\
 		\hline
 	\end{tabular}
-	\caption{result planner first request}
+	\caption{Result tuning parameters process noise covariance for Jobot}
 \end{table}
 
-Measure where performed with only $yaw$ 000, $V_{yaw}$ gyro 001, $V_{yaw}$ gyro and $V_{yaw}$ odom from the 002 and down.
-The best result is with a coefficient of 320 with both the measure of velocity.
 
-In this image is visible the data obtained in record 000 with only yaw and we see also changing the value of the coefficien matrix that the value doesnt change with also the Vyaw inserted\\
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/with_yaw.png}
-	\captionof{figure}{with\_yaw}
-\end{figure}
-
-Then it was decided to remove it and see the result with the Vyaw of the imu\\
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/jobot_only_imu_Vyaw_bassa.png}
-	\captionof{figure}{jobot\_only\_imu\_Vyaw\_bassa}
-\end{figure}
-the result are over exagerated. at the end we sum up the both of them to obtain \\
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/with_both_Vyaw.png}
-	\captionof{figure}{with\_both\_Vyaw}
-\end{figure}
-that was promising and we change the value of the coessicient like in the table.
-At the end we obtain this best result.\\
+We obtain the best result with a value on the process noise covariance of 320. And the best outcome is visible in the following picture:\\
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{img/final_best.png}
-\captionof{figure}{Ottimal result obtained visualized in Rviz}
+\captionof{figure}{Best result obtained for Jobot}
 \label{Ottimal result obtained visualized in Rviz}
 \end{figure}
 
-The complete plot is:
+The plotted data are:
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/jobot_ekf_full.png}
-	\captionof{figure}{Some results plotted for the jobot setting parameter}
+	\captionof{figure}{Results from the tuning of the process noise covariance for the Jobot plotted}
 \end{figure}
+
 \section{Parameter tuning for the AMCL}
-Calibrating the Q now we have to correct to have the correct position also in function of the map, like described before. This compesnsate all the error given by not correct odometry estimation.
-In this section we will edit the $\alpha$ parameters ans see the output. 
-This parameters are:
+Calibrated the process noise matrix $Q$ for both the robots, now we have to estimating the correct position in respect of the map (global localization) and this is done using the AMCL node as described before. This also compensate for all the error given by not correct odometry estimation.
+In this section we will edit the $\alpha$ parameters and see the results. 
+A description of these is:
 
 \begin{itemize}
 	\item $\alpha 1$ : Expected process noise in odometry’s rotation estimate from rotation.
@@ -673,21 +673,19 @@ This parameters are:
 	\item $\alpha 4$ : Expected process noise in odometry’s translation estimate from rotation.
 \end{itemize}
 
-The also other parameters is going to be tested. but this are first to look for changing  dinamics.
+\subsection{Setting up the AMCL of the mini}
+These tests were performed on record 007 and the start position is about 0.5m from the ending position. This choice was made because it was done in a challenging situation that show the difficult that may encounter a AMR because for the first half of the path the robot encounters enough feature that can be used in the AMCL node to retrieve the correct position respect the map (the doors of that part of the corridor are open and give sharp edge to the laser scanner), while in the second half there are not hight environment details (the door of the other half of the corridor are closed) and the estimation of the position can fail to estimate.
 
-\subsection{setting the amcl of the mini}
-this test were performed on record 007 and the start position is about 0.5m from the ending position. The choise to use this is because it was done in a challenging situation that show the difficult that may encounter a AMR. the problem is that for the first half of the path the robot encounters enough feature that can be used for the AMCL node to retrive the correct position respect the map (the doors of that part of the corridor are open and give sharp edge to the laser scanner), while in the second half the are not high detailed enviroment descriptor and the estimation of the position is going crazy (the door of the other half of the corridor are closed).
-
-
-this is the odometry with alpha parameters set to 0:
+Now it's show the the odometry estimation with the $\alpha$ parameters set to 0:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini\_ekf\_no\_correction\_record007.png}
 	\captionof{figure}{mini\_ekf\_no\_correction\_record007}
 \end{figure}
 
-this are the result:
+Then we tested changing only one parameter at time, increasing its effect on the estimation adding more attention to the parameters that correct more the estimation done in the \texttt{robot\_localization} node that is we need to compensate an error during rotation and also an error on position traveled. This can be compensate using the parameters: $\alpha 1$ and $\alpha 3$. 
 
+The result are show below and in the first row is the data from odometry given by the localization node and without correction of the AMCL node.
 
 \begin{table}[H]
 	\centering
@@ -723,11 +721,7 @@ this are the result:
 	\caption{result planner first request}
 \end{table}
 
-the first row is the data from odometry given by the localization node and without correction of the AMCL node.
-From the mini setting ekf parameters we saw that we need to compensate an error during rotation and also an error on position travelled. This can be compensate using the parameters: $\alpha 1$ and $\alpha 3$. so we decided t investigate more on the result changing that parameters.
-
-
-changin the rotation parameter fix the rotation error, but we obtain a lot of oscillation in the psotion in data 004.
+Changing $\alpha 1$ and $\alpha 2$ fix the rotation error, but we obtain a lot of oscillation in the position correction if we increase it a lot and is visible in data 004. So at the end we choose to keep around 0.1 for both. So we obtain this picture of the odometry that show that the rotation was fixed. But it show also that the position moved is not corrected, as expected, because the change in direction done on the left is done respect of the map before of the intersection of the hallways.
 
 \begin{figure}[H]
 	\centering
@@ -735,7 +729,7 @@ changin the rotation parameter fix the rotation error, but we obtain a lot of os
 	\captionof{figure}{a1\_amcl\_stain\_but\_notlenght}
 \end{figure}
 
-yhis are the plot of the heading:
+Done this allow us to see the correction done for the heading. It's possible to see an increment of the error each time the robots curve also an increment during the translation.
 
 \begin{figure}[H]
 	\centering
@@ -743,43 +737,22 @@ yhis are the plot of the heading:
 	\includegraphics[width=0.9\linewidth]{img/mini_angle_correction_amcl.png}
 	\captionof{figure}{a1\_amcl\_stain\_but\_notlenght}
 \end{figure}
-so the correction we eill apport for the heading are 0.001 for $\alpha 1$ e $\alpha 2$
 
-
-changing only the $\alpha 3$ doest change the outcome 
-while the combination fixed the error comming back from the rotation has not solved the problem at the right
-
-At the end
-the best solution is the last one that correct the position along the path:
-
+From the table is show that without adding the correction on rotation the only translation error doesn't solve the problem.
+During testing (data 009) was possible to see that the compbination of these parameters allowed a correction on the position on the left of the path (the one with more map detail) not completely solved the problems on the right (with less detail) but was manage to correct it.
+The last one (data 010) was the best solution that solved the position error during the movement. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini_best_result_amcl.png}
 	\captionof{figure}{best result}
 \end{figure}
 
-plotting the data acquired we obtain:
+And this is the data plotted:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/final_result_and_correction_XY.png}
 	\captionof{figure}{best result mini data plotted}
 \end{figure}
-
-
-
-the record also will not describe the reality, if we ask the planner to move to a location and the AMCL doest manage to correct in time the position the global planner becouse the position of the door in the global planner is not aligned with the position of the door in the local planner and the path is "blocked" for the navigation.
-The solution is to add a openrmf vertex before the door to allow more iteration during rotation to fix the translation error allowing to generate a path to enter at the door.
-Other solution is to apply some marker visible by a camera in the office space so to the localization node can have a periodic absolute correction, like a GPS (also that can be added to allow correction and movment outside the facility, moving between the buildings).
-
-
-this is the type of error you can inconter:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/possible error caused by not good estimation.png}
-	\captionof{figure}{error when also AMCL fail}
-\end{figure}
-
 
 \subsection{setting the amcl of the jobot}
 
@@ -853,6 +826,21 @@ During the navigation is possible to see when performing strette turns , that th
 \end{figure}
 
 This was solved, also reading on papers this is the best solution, changing the Local planner from the Dynamic Window Approach DWB successore del DWA (The goal of a local planner is to take the global plan and local costmap and produce the command velocities that will presumably move the robot to the goal. Both dwa and dwb do this via sampling, i.e. generating plausible velocity commands and evaluating them on various metrics and selecting the one with the best score, until the robot reaches its goal) to the Model Predictive Path Integral Controller MPPI \cite{7487277}, without any tuning of the controller the jobot performed better\cite{macenski2023survey}.
+
+Also if not enought feature where found
+the record also will not describe the reality, if we ask the planner to move to a location and the AMCL doest manage to correct in time the position the global planner becouse the position of the door in the global planner is not aligned with the position of the door in the local planner and the path is "blocked" for the navigation.
+The solution is to add a openrmf vertex before the door to allow more iteration during rotation to fix the translation error allowing to generate a path to enter at the door.
+Other solution is to apply some marker visible by a camera in the office space so to the localization node can have a periodic absolute correction, like a GPS (also that can be added to allow correction and movment outside the facility, moving between the buildings).
+
+
+this is the type of error you can inconter:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/possible error caused by not good estimation.png}
+	\captionof{figure}{error when also AMCL fail}
+\end{figure}
+
 
 
 \section{External enviromets detail}
