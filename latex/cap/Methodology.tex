@@ -6,7 +6,7 @@ In this part, we describe the entire procedure followed in the development of th
 	\item The procedure used to port the global planner from ROS 1 to ROS 2, and its integration into the Nav2 framework.
 	\item The tools and methods used to integrate the system into Open-RMF.
 \end{itemize}
-All source code developed for this project is publicly available in the following GitHub repository: \texttt{michbelle/myTesiCode}\footnote{\href{https://github.com/michbelle/myTesiCode}{https://github.com/michbelle/myTesiCode}}. The repository also includes the necessary components for simulating the system.\\
+All source code developed for this project is publicly available in the following GitHub repository: \texttt{michbelle/tesi\_mag}\footnote{\href{https://github.com/michbelle/tesi\_mag}{https://github.com/michbelle/tesi\_mag}}. The repository also includes the necessary components for simulating the system.\\
 The simulation environment is containerized using Docker, which provides a consistent and OS-independent base system. The Docker image is built on top of \texttt{osrf/ros:jazzy-desktop-full} and includes all the packages developed for this thesis, as well as the required Open-RMF tools and its demo simulation.\\
 
 
@@ -585,7 +585,7 @@ We can see in the picture \ref{result ekf mini with walls} that the position alo
 
 \subsection{Setting up the EKF of the Jobot}
 Similar procedure from the Mini was performed for the Jobot.
-We, also, discovered that in both of the records, the robot while moving through a fire door make a "jump" visible in the odometry, this can be caused by a little step needed for the fire door. 
+We discovered that in both of the records, the robot while moving through a fire door make a "jump" visible in the odometry, this can be caused by a little step needed for the fire door. 
 From some initial test is visible that the estimation of the length of the path followed by the robot is correct and so we focused our attention on the error in the rotation that is visible.
 
 The data of measure 000 was performed with only the $yaw$ of the odometry of the robot
@@ -739,7 +739,7 @@ Done this allow us to see the correction done for the heading. It's possible to 
 \end{figure}
 
 From the table is show that without adding the correction on rotation the only translation error doesn't solve the problem.
-During testing (data 009) was possible to see that the compbination of these parameters allowed a correction on the position on the left of the path (the one with more map detail) not completely solved the problems on the right (with less detail) but was manage to correct it.
+During testing (data 009) was possible to see that the combination of these parameters allowed a correction on the position on the left of the path (the one with more map detail) not completely solved the problems on the right (with less detail) but was manage to correct it.
 The last one (data 010) was the best solution that solved the position error during the movement. 
 \begin{figure}[H]
 	\centering
@@ -754,14 +754,14 @@ And this is the data plotted:
 	\captionof{figure}{best result mini data plotted}
 \end{figure}
 
-\subsection{setting the amcl of the jobot}
+\subsection{Setting up the AMCL for the Jobot}
 
-As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the error to correct is angular position and this is create during rotation around of axis, so as described for the parameters we need to change the $\alpha 1$ parameter, as descibed before is \textit{Expected process noise in odometry’s rotation estimate from rotation}.
+As said before, in both the record, when the robot passed the fire door, it "jumped" and create an error in the estimation. We keep that information and see how the amcl package recover from that jump.
+For the record 001, the one we are going to use in our test, the difference in distance from the start position and the end is around 0.6 m .
 
-In both the record when the robot passed the door, it "jumped" and create an error in the estimation. We keep that information and see how the amcl package recover from that jump.
-Also the start position and the end one has a difference of aounrd 0.6 m
+As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the error to correct is the angular position that is generated during rotation around of axis, so as already described, we need to change the parameter $\alpha 1$, \textit{Expected process noise in odometry’s rotation estimate from rotation}. So, for these test we are going to increase that value and see how the output change.
 
-This time we start with all parameter set to low and increasing the $\alpha 1$ parameter as follow and we describe the results:
+
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|}
@@ -785,10 +785,8 @@ This time we start with all parameter set to low and increasing the $\alpha 1$ p
 	\end{tabular}
 	\caption{result planner first request}
 \end{table}
- 
-The data 000 see that the robot didint recover from that jump and also managed a little.
 
-the incrementation of the paramenter in data 001 not reported un impovment, the jump break highlty the system.
+In the first row, is reported the output of the estimation in odometry without correction. With data 000 and 001 we see that the robot didn't recover from the jump and increasing the error.
 
 \begin{figure}[H]
 	\centering
@@ -796,54 +794,57 @@ the incrementation of the paramenter in data 001 not reported un impovment, the 
 	\captionof{figure}{record1}
 \end{figure}
 
-we can try to solve this problem with adding fix rotation during translation incrementing parameter $\alpha 2$, record 002. 
-
-we tried to increment $\alpha 3$ to have a better incremention of position error during translation, but added more error to the result.
-
-so the optimal solution is the with:
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\linewidth]{img/record2.png}
-\captionof{figure}{record2}
-\end{figure}
+Because it hasn't any correction of rotation during translation $\alpha 2$, moving straight after the jump don't fix the error in rotation. So we increased it obtaining good result.\\
+To getting  a better result we added a little more of correction on  $\alpha 3$ and $\alpha 4$. Considering that in our test the path was small and there can be possible more error in translation we obtain also increment in the performance in the estimation. 
+So the plot of the data of the best result are:
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{img/amcl_jobot_best_plot.png}
-\captionof{figure}{posizione giusta}
+\captionof{figure}{Plots of the best result for the Jobot with record 001}
 \end{figure}
 
+This show that the little step has generate a very high error in all three dimension $x$, $y$ and $yaw$ but it managed to correct it perfectly.
 
-\section{Navigation errors}
+Also it was tested on record 002 that was create thinking about of the error generate by an environment without a good number of feature. In fact it was decided to move along the corridor and then close the door of some office. Since the odometry estimated by the robot is good and the correction in the AMCL is low this not generate a problem. Here is a picture of the result:
 
-During the navigation is possible to see when performing strette turns , that the jobot was gettitng stuck.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{img/record2.png}
+	\captionof{figure}{Result of the Jobot with record 002}
+\end{figure}
+
+\section{Navigation problems}
+\subsection{In simulation}
+Now we tested the robots in simulation and discover for the Jobot that during sharp curves, as in picture below \ref{sharp curves} the robot stopped right before the turn and rotate on its position and going to hit the wall and stopped.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/problem_local_planner_jobot.png}
 	\captionof{figure}{problem\_local\_planner\_jobot}
+	\label{sharp curves}
 \end{figure}
 
-This was solved, also reading on papers this is the best solution, changing the Local planner from the Dynamic Window Approach DWB successore del DWA (The goal of a local planner is to take the global plan and local costmap and produce the command velocities that will presumably move the robot to the goal. Both dwa and dwb do this via sampling, i.e. generating plausible velocity commands and evaluating them on various metrics and selecting the one with the best score, until the robot reaches its goal) to the Model Predictive Path Integral Controller MPPI \cite{7487277}, without any tuning of the controller the jobot performed better\cite{macenski2023survey}.
+This is caused by the local planner failing to generate a good command to move the robot. It took the global plan and the local costmap and produce the command velocities to move the robot to the goal.\\
+One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA, based on the sampling of possible velocities and selection the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, uses a sampling based approach to select optimal trajectories, optimizing between successive iterations, that it show to perform better\cite{macenski2023survey} and work without any configuration.\\
+The other solution was to tune the DWB to avoid this behavior.   
 
-Also if not enought feature where found
-the record also will not describe the reality, if we ask the planner to move to a location and the AMCL doest manage to correct in time the position the global planner becouse the position of the door in the global planner is not aligned with the position of the door in the local planner and the path is "blocked" for the navigation.
-The solution is to add a openrmf vertex before the door to allow more iteration during rotation to fix the translation error allowing to generate a path to enter at the door.
-Other solution is to apply some marker visible by a camera in the office space so to the localization node can have a periodic absolute correction, like a GPS (also that can be added to allow correction and movment outside the facility, moving between the buildings).
-
-
-this is the type of error you can inconter:
+\subsection{In reality}
+As describe before in the path for the Mini with its high error in position estimation given by the localization and the possibility to not find enough feature description of the map using the scan, if we asked to move to a location and the AMCL doesn't manage to correct in time, the robot return that no path were found. This happen because the position of the door in the global costmap is not aligned with the position of the door in the local costmap and the path is closed for the global planner, as show in the picture below \ref{error local and global costamp}.\\
+The solution can be to rotate before, this allow the AMCL to fix the error between the odom frame and the map frame incrementing the parameter that regulate his error given by rotation.\\
+This is possible with openRMF adding vertex before the door to allow to fix the translation error allowing to generate a path to enter at the door.\\
+Another solution is to improve the odometry estimation of the Mini using absolute reference marker visible by a camera so to the localization node can have a periodic absolute correction, like a GPS (also that can be added to allow correction and movement outside the facility, moving between the buildings) to correct its absolute position.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/possible error caused by not good estimation.png}
 	\captionof{figure}{error when also AMCL fail}
+	\label{error local and global costamp}
 \end{figure}
 
 
 
-\section{External enviromets detail}
+\section{Some external details}
 
 After some testing, these are the problems we found:
 \begin{itemize}
@@ -856,16 +857,20 @@ When operating in an office environment, the robot’s laser sensor cannot detec
 \end{figure}\\
 One possible solution is to reduce the free space from the occupancy map. However, the dimensions of the chair legs are quite long, significantly reducing the available space to pass through doors, which the planner currently prevents.
 Another option is to relocate the LIDAR sensor underneath the robot. This would require a low-profile LIDAR and would create blind spots by the wheels if no additional sensors are added on top.
-A cheap solution is to add some ultrasonic sensor with an hight field of view to catch these object that the lidar doesnt see.
-Alternatively, adding a depth camera could provide a 3D occupancy grid, which can then be processed to generate a simpler 2D map.
- 
-\item The RMF commands from waypoint to waypoint: RMF commands the robot from waypoint to waypoint, and it leaves the low level navigation to each robot's navigation stack. So if the robot chooses to use a non-straight route, it means that the RMF navigation graph might need to be re-drawn or reconsidered (if there are constant obstacles around), or the navigation stack of the robot should be tuned to allow tighter tolerances for static/dynamic obstacles. but how the robot chooses to navigate between them is out of RMF's control, since RMF does not have dynamic obstacle information, or if there are new static obstacles, it needs to be reflected into RMF's traffic navigation graph
+A cheap solution is to add some ultrasonic sensor with an high field of view to catch these object that the LIDAR doesn't see.
+Alternatively, adding a depth camera could provide a 3D occupancy grid, which can then be processed to generate a 2D costmap.
 
-\item \alert{the communication is not the same as the ROS 1 with a central node and all node has to communicate to hei to share data, the ROS 2 infrastructure now allow that throught multicasting all devices within the same subnet are connected. to avoid to share data multiple solution are avaible some depending from the middleware used (cycloneDDS, FastRTS) or associate each robot with a \texttt{namespace} or the fastest one is to associated each robot with a unique \texttt{ROS\_DOMAIN\_ID}. The last solution is used, the only downside is the maximum number of robot allowed in the subnet is 255.}
+\item The ROS 2 infrastructure allow that through multicasting all devices within the same subnet are connected. To avoid multiple node to publish to the same topic creating errors in the communication multiple solution are available:
+\begin{itemize}
+ \item some depending from the middleware used (cycloneDDS, FastRTS),
+ \item assign each robot with a \texttt{namespace},
+ \item associated each robot with a unique \texttt{ROS\_DOMAIN\_ID}.
+\end{itemize}
+the solution that better apply us and the one is adopted in the Free Fleet package is the use the \texttt{ROS\_DOMAIN\_ID}. This was also applied in the simulation. Then all important topic are share through the zenoh plugin as described before. 
 
-\item The D-star planner is not designed if its path is completely blocked because it not update the costmap used internally at each request of the planner
+\item The D-star planner is not designed if its path is getting blocked  by an object that was not visible before. This is because it don't update the costmap used internally in the code at each request of the planner that inform the planner that a new obstacle was fond. 
 
-\item \add{Setting up collision monitor for improve safety reason}
+\item An increment in the security is the setting up collision monitor for improve safety reason. This node use the information of some sensor and reduce the velocity sended to the robot in funcion of near obstacle.
 
 \item Additionally, we discovered misalignment between the planimetry image and the Cartographer map, as shown in the image below. It appears that at each major rotation, the system overestimates the robot’s rotation angle during mapping.
 
