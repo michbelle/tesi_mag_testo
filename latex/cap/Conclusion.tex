@@ -1,12 +1,10 @@
 \part{Conclusion and Future Work}
-Over this work we conclude the advantages ROS 2 brings for the industrial environment and the potentiality that OpenRMF brings. In this chapter we describe all the advantages we discovered.
+Through this work, we conclude the advantages that ROS 2 brings to the industrial environment and the potential that OpenRMF offers. In this chapter, we describe all the advantages we discovered.
 \chapter{Conclusion}
-The new LifeCycle state machine available for the nodes allow to better manage the interaction between the nodes, allowing to control in the event that some node crash or some node to fail to change state the behavior of other nodes, like if the node that control some sensor fail to output and change state or crashed can stop the Nav2 nodes and make the robot go to a safe state. 
-Also for building AMR the modularity and the big number of solution for each problem allow to change plugins and node easily allowing to allow a fast deploy.
-The configurability of the nodes allow to find the best performance with little change of code.
-The configurability of the new launch system for the nodes allow to control the sequence and avoid to launch nodes if some failed to execute.
-The modularity of Nav2 allowed the fast import of the code from our planner and to see his advantages and the disadvantages.
-The Dstar algorithm show the advantages to have the path saved and to be loaded at needed.
-The OpenRMF show the possiblies that can be implemented.
+The new Lifecycle state machine available for the nodes allows for better management of interactions between nodes. It enables control in the event that a node crashes or fails to change state, affecting the behavior of other nodes. For example, if the node controlling a sensor fails to output or crashes, it can stop the Nav2 nodes and transition the robot to a safe state.
+
+Additionally, for building AMRs, the modularity and the vast array of solutions for each problem allow for easy changes in plugins and nodes, facilitating rapid deployment. The configurability of the nodes enables these performance enhancements with minimal code changes. The configurability of the new launch system for the nodes allows control over the sequence and prevents launching nodes if some fail to execute.
+
+The modularity of Nav2 enabled the quick import of the code from our planner, allowing us to assess its advantages and disadvantages. Finally, OpenRMF showcases the possibilities that can be implemented.
 \chapter{Future work}
-Using the OpenRMF we can create nodes that thanks a large language model can send task to the robot. We want to implement this feature for our warehouse and thanks at this we can control the robot. Also thanks to the Fleet adapter that is the base of the Flee fleet package we can control other robots in our fleet. We also find way to improve the planner.
+Using OpenRMF, we can create nodes that, thanks to a large language model, can send tasks to the robot. We aim to implement this feature for our warehouse, enabling us to control the robot effectively. Additionally, with the Fleet Adapter, which forms the basis of the Free Fleet package, we can manage other robots in our fleet. We have also identified ways to improve the planner.

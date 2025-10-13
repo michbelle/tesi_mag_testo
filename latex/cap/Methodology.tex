@@ -659,9 +659,7 @@ The plotted data are:
 \end{figure}
 
 \section{Parameter tuning for the AMCL}
-Calibrated the process noise matrix $Q$ for both the robots, now we have to estimating the correct position in respect of the map (global localization) and this is done using the AMCL node as described before. This also compensate for all the error given by not correct odometry estimation.
-In this section we will edit the $\alpha$ parameters and see the results. 
-A description of these is:
+Calibrated the process noise matrix $Q$ for both robots. Now, we need to estimate the correct position concerning the map (global localization), which is achieved using the AMCL node as described earlier. This also compensates for all the errors caused by incorrect odometry estimation. In this section, we will adjust the $\alpha$ parameters and observe the results. A description of these parameters is as follows:
 
 \begin{itemize}
 	\item $\alpha 1$ : Expected process noise in odometry’s rotation estimate from rotation.
@@ -671,18 +669,17 @@ A description of these is:
 \end{itemize}
 
 \subsection{Setting up the AMCL of the mini}
-These tests were performed on record 007 and the start position is about 0.5m from the ending position. This choice was made because it was done in a challenging situation that show the difficult that may encounter a AMR because for the first half of the path the robot encounters enough feature that can be used in the AMCL node to retrieve the correct position respect the map (the doors of that part of the corridor are open and give sharp edge to the laser scanner), while in the second half there are not hight environment details (the door of the other half of the corridor are closed) and the estimation of the position can fail to estimate.
+These tests were performed on record 007, and the starting position is about 0.5 m from the ending position. This choice was made because it was conducted in a challenging situation that demonstrates the difficulties an AMR may encounter. In the first half of the path, the robot encounters enough features that can be used by the AMCL node to retrieve the correct position relative to the map (the doors in that part of the corridor are open, providing sharp edges for the laser scanner). However, in the second half, there are not many environmental details (the doors of the other half of the corridor are closed), and the position estimation may fail.
 
-Now it's show the the odometry estimation with the $\alpha$ parameters set to 0:
+In the following figure, the odometry estimation with the $\alpha$ parameters set to 0 for record 007 is shown.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini\_ekf\_no\_correction\_record007.png}
-	\captionof{figure}{mini\_ekf\_no\_correction\_record007}
+	\captionof{figure}{Best result with the Mini using the \texttt{robot\_localization} for the record 007}
 \end{figure}
 
-Then we tested changing only one parameter at time, increasing its effect on the estimation adding more attention to the parameters that correct more the estimation done in the \texttt{robot\_localization} node that is we need to compensate an error during rotation and also an error on position traveled. This can be compensate using the parameters: $\alpha 1$ and $\alpha 3$. 
-
-The result are show below and in the first row is the data from odometry given by the localization node and without correction of the AMCL node.
+Then, we tested changing only one parameter at a time, increasing its effect on the estimation while paying closer attention to the parameters that most effectively correct the estimation made in the \texttt{robot\_localization} node. This is necessary to compensate for errors during rotation and also errors in the traveled position. This can be compensated using the parameters:$\alpha 1$ and $\alpha 3$.\\
+The results are shown below, with the first row displaying the data from odometry provided by the localization node without correction from the AMCL node.
 
 \begin{table}[H]
 	\centering
@@ -718,30 +715,28 @@ The result are show below and in the first row is the data from odometry given b
 	\caption{result planner first request}
 \end{table}
 
-Changing $\alpha 1$ and $\alpha 2$ fix the rotation error, but we obtain a lot of oscillation in the position correction if we increase it a lot and is visible in data 004. So at the end we choose to keep around 0.1 for both. So we obtain this picture of the odometry that show that the rotation was fixed. But it show also that the position moved is not corrected, as expected, because the change in direction done on the left is done respect of the map before of the intersection of the hallways.
+Changing $\alpha 1$ and $\alpha 2$ fixes the rotation error, but we observe significant oscillation in the position correction if we increase them too much; this is evident in data 004. In the end, we decided to keep both parameters around 0.1. As a result, we obtained this picture of the odometry, which shows that the rotation was corrected. However, it also indicates that the positional movement has not been corrected, as expected, because the change in direction to the left occurs with respect to the map prior to the intersection of the hallways.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/a1_amcl_stain_but_notlenght.png}
-	\captionof{figure}{a1\_amcl\_stain\_but\_notlenght}
+	\captionof{figure}{Result performed by AMCL without length correction}
 \end{figure}
 
-Done this allow us to see the correction done for the heading. It's possible to see an increment of the error each time the robots curve also an increment during the translation.
+This allowed us to observe the corrections made for the heading. It is evident that the error increases as the robot moves, and we can see that we performed a good correction using the \texttt{robot\_localization} package.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini_rotation_correction.png}
 	\includegraphics[width=0.9\linewidth]{img/mini_angle_correction_amcl.png}
-	\captionof{figure}{a1\_amcl\_stain\_but\_notlenght}
+	\captionof{figure}{Heading correction for the Mini with AMCL}
 \end{figure}
 
-From the table is show that without adding the correction on rotation the only translation error doesn't solve the problem.
-During testing (data 009) was possible to see that the combination of these parameters allowed a correction on the position on the left of the path (the one with more map detail) not completely solved the problems on the right (with less detail) but was manage to correct it.
-The last one (data 010) was the best solution that solved the position error during the movement. 
+The table shows that without adding the correction for rotation, the translation error alone does not solve the problem. During testing (data 009), it was possible to see that the combination of these parameters allowed for a correction of the position on the left side of the path (the one with more map detail). This did not completely resolve the issues on the right side (with less detail), but it was able to make some corrections. The final solution (data 010) was the best, effectively addressing the position error during movement.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini_best_result_amcl.png}
-	\captionof{figure}{best result}
+	\captionof{figure}{Best result obtained by AMCL on the Mini on record 007}
 \end{figure}
 
 And this is the data plotted:
@@ -753,10 +748,7 @@ And this is the data plotted:
 
 \subsection{Setting up the AMCL for the Jobot}
 
-As said before, in both the record, when the robot passed the fire door, it "jumped" and create an error in the estimation. We keep that information and see how the AMCL package recover from that jump.
-For the record 001, the one we are going to use in our test, the difference in distance from the start position and the end is around 0.6 m .
-
-As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the error to correct is the angular position that is generated during rotation around of axis, so as already described, we need to change the parameter $\alpha 1$, \textit{Expected process noise in odometry’s rotation estimate from rotation}. So, for these test we are going to increase that value and see how the output change.
+As mentioned before, in both records, when the robot passed the fire door, it "jumped," creating an error in the estimation. We noted that information and observed how the AMCL package recovers from this jump. For record 001, which we will use in our test, the difference in distance from the starting position to the ending position is around 0.6 m. As shown in figure \ref{Ottimal result obtained visualized in Rviz}, the error that needs correcting is the angular position generated during rotation around the axis. Therefore, as previously described, we need to adjust the parameter $\alpha 1$, which relates to the expected process noise in the odometry's rotation estimate. For this test, we will increase that value and observe how the output changes.
 
 
 \begin{table}[H]
@@ -780,20 +772,18 @@ As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the erro
 		0.01 & 0.001 & 0.001 & 0.001 & 0.59 & 005 \\
 		\hline
 	\end{tabular}
-	\caption{result planner first request}
+	\caption{Result AMCL Jobot}
 \end{table}
 
-In the first row, is reported the output of the estimation in odometry without correction. With data 000 and 001 we see that the robot didn't recover from the jump and increasing the error.
+In the first row, the output of the estimation in odometry without correction is reported. With data 000 and 001, we observe that the robot did not recover from the jump, resulting in an increasing error.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/amcl_jobot_001.png}
-	\captionof{figure}{record1}
+	\captionof{figure}{Figure of data 001 obtained by Jobot}
 \end{figure}
 
-Because it hasn't any correction of rotation during translation $\alpha 2$, moving straight after the jump don't fix the error in rotation. So we increased it obtaining good result.\\
-To getting  a better result we added a little more of correction on  $\alpha 3$ and $\alpha 4$. Considering that in our test the path was small and there can be possible more error in translation we obtain also increment in the performance in the estimation. 
-So the plot of the data of the best result are:
+Because we didn't increase the correction for rotation during translation $\alpha 2$, and since we moved straight after the jump, AMCL did not fix the rotation error. So, we increased it, achieving good results. To obtain even better outcomes, we added a bit more correction with  $\alpha 3$ and $\alpha 4$. Considering that our test path was short and there could be additional errors in translation, we also observed an increase in estimation performance. The plot of the data for the best results is as follows:
 
 \begin{figure}[H]
 \centering
@@ -801,9 +791,9 @@ So the plot of the data of the best result are:
 \captionof{figure}{Plots of the best result for the Jobot with record 001}
 \end{figure}
 
-This show that the little step has generate a very high error in all three dimension $x$, $y$ and $yaw$ but it managed to correct it perfectly.
+This shows that the small step generated a very high error in all three dimensions: $x$, $y$ and $yaw$, but AMCL managed to correct it perfectly.
 
-Also it was tested on record 002 that was create thinking about of the error generate by an environment without a good number of feature. In fact it was decided to move along the corridor and then close the door of some office. Since the odometry estimated by the robot is good and the correction in the AMCL is low this not generate a problem. Here is a picture of the result:
+It was also tested on record 002, which was created with the intention of generating errors in the estimation due to an environment lacking a sufficient number of features. In fact, it was decided to move the robot along the corridor and, before coming back, to close the doors of some offices. Since the odometry estimated by the robot is good and the corrections in the AMCL are minimal, this did not create a problem. Here is a picture of the result:
 
 \begin{figure}[H]
 	\centering
@@ -813,7 +803,7 @@ Also it was tested on record 002 that was create thinking about of the error gen
 
 \section{Navigation problems}
 \subsection{In simulation}
-Now we tested the robots in simulation and discover for the Jobot that during sharp curves, as in picture below \ref{sharp curves} the robot stopped right before the turn and rotate on its position and going to hit the wall and stopped.
+Now we tested the robots in simulation and discovered that for the Jobot, during sharp curves, as shown in figure \ref{sharp curves} below, the robot stopped right before the turn, rotated in place, and then proceeded to hit the wall, eventually stopping.
 
 \begin{figure}[H]
 	\centering
@@ -822,20 +812,16 @@ Now we tested the robots in simulation and discover for the Jobot that during sh
 	\label{sharp curves}
 \end{figure}
 
-This is caused by the local planner failing to generate a good command to move the robot. It took the global plan and the local costmap and produce the command velocities to move the robot to the goal.\\
-One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA, based on the sampling of possible velocities and selection the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, uses a sampling based approach to select optimal trajectories, optimizing between successive iterations, that it show to perform better\cite{macenski2023survey} and work without any configuration.\\
-The other solution was to tune the DWB to avoid this behavior.   
+This issue is caused by the local planner failing to generate an effective command to move the robot. It takes the global plan and the local costmap and produces command velocities to direct the robot toward the goal. One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA,  based on the sampling of possible velocities and selecting the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, which uses a sampling-based approach to select optimal trajectories, optimizing across successive iterations. This approach has shown better performance\cite{macenski2023survey}and works without any configuration. The other solution was to tune the DWB to avoid this behavior.
 
 \subsection{In reality}
-As describe before in the path for the Mini with its high error in position estimation given by the localization and the possibility to not find enough feature description of the map using the scan, if we asked to move to a location and the AMCL doesn't manage to correct in time, the robot return that no path were found. This happen because the position of the door in the global costmap is not aligned with the position of the door in the local costmap and the path is closed for the global planner, as show in the picture below \ref{error local and global costamp}.\\
-The solution can be to rotate before, this allow the AMCL to fix the error between the odom frame and the map frame incrementing the parameter that regulate his error given by rotation.\\
-This is possible with openRMF adding vertex before the door to allow to fix the translation error allowing to generate a path to enter at the door.\\
-Another solution is to improve the odometry estimation of the Mini using absolute reference marker visible by a camera so to the localization node can have a periodic absolute correction, like a GPS (also that can be added to allow correction and movement outside the facility, moving between the buildings) to correct its absolute position.
+As described earlier, the Mini has a high error in position estimation due to the localization and the lack of sufficient feature description of the map using the scan. If we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
+. One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/possible error caused by not good estimation.png}
-	\captionof{figure}{error when also AMCL fail}
+	\includegraphics[width=0.5\linewidth]{img/possible error caused by not good estimation.png}
+	\captionof{figure}{Error when also AMCL fail}
 	\label{error local and global costamp}
 \end{figure}
 
@@ -857,13 +843,13 @@ Another option is to relocate the LIDAR sensor underneath the robot. This would 
 A cheap solution is to add some ultrasonic sensor with an high field of view to catch these object that the LIDAR doesn't see.
 Alternatively, adding a depth camera could provide a 3D occupancy grid, which can then be processed to generate a 2D costmap.
 
-\item The ROS 2 infrastructure allow that through multicasting all devices within the same subnet are connected. To avoid multiple node to publish to the same topic creating errors in the communication multiple solution are available:
+\item The ROS 2 infrastructure allows all devices within the same subnet to connect through multicasting. To avoid multiple nodes publishing to the same topic and creating errors in communication, several solutions are available:
 \begin{itemize}
  \item some depending from the middleware used (cycloneDDS, FastRTS),
  \item assign each robot with a \texttt{namespace},
  \item associated each robot with a unique \texttt{ROS\_DOMAIN\_ID}.
 \end{itemize}
-the solution that better apply us and the one is adopted in the Free Fleet package is the use the \texttt{ROS\_DOMAIN\_ID}. This was also applied in the simulation. Then all important topic are share through the zenoh plugin as described before.
+The solution that best applies to us and is adopted in the Free Fleet package is the use of the  \texttt{ROS\_DOMAIN\_ID}. This was also implemented in the simulation. Consequently, all important topics are shared through the Zenoh plugin, as described earlier.
 
 \item The D-star algorithm does not perform effectively within the ROS 2 planner ecosystem because the map update procedure does not allow the planner to detect obstacles, this implementation has been included in the roadmap.
 
