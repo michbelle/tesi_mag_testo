@@ -5,10 +5,10 @@
 This part is divided based on the things that have been completed:
 \begin{itemize}
 	\item porting the planner DStarGlobalPlanner from ROS 1 to ROS 2.
-	\item building two Autonomous Mobile Robots (AMR):
+	\item "building" two Autonomous Mobile Robots (AMR):
 	\begin{itemize}
-		\item one from the RoverRobotics Mini platform
-		\item one updating the existing one to ROS 2
+		\item from scratch and using the Rover Robotics Mini platform.
+		\item proving the portability of the code structure used for the Jobot updating to ROS 2.
 	\end{itemize}
 	\item implement the Open-RMF middleware using these robots.
 \end{itemize}
@@ -21,7 +21,7 @@ We have successfully port the code to ROS 2 and used for navigation. These are s
 	\captionof{figure}{results obtained by the Dstar planner}
 \end{figure}
 \\
-In the end, the logic transformation between the move\_base logic from ROS 1 to the Planner Server used in ROS 2 for the global planner are based on the implementation of the state machine Lyfecycle and the application of more advanced functionality of the languages used for programming.
+In the end, the logic transformation between the move\_base logic from ROS 1 to the Planner Server used in ROS 2 for the global planner are based on the application of more advanced functionality of the languages used for programming.
 
 
 \section{Build 2 AMR in ROS 2}
@@ -42,8 +42,8 @@ We find its problem with its position estimation and we solved tuning the parame
 Obtaing that the best performace was archived with this values for the process covariance matrix:
 $v_{yaw}$ of 10.0
 and for AMCL: $\alpha 1$ 0.01, $\alpha 2$ 0.01, $\alpha 3$ 0.1 and $\alpha 4$ 0.0001
-\section{in particolar for the jobot}
-We converted all the code that was used to control the robot from ROS 1 to ROS 2, adding the Lyfecycle to be implemented as a part of the boot sequence of the robot with Nav2 and his sensors.
+\section{In particolar for the jobot}
+We converted all the code that was used to control the robot from ROS 1 to ROS 2 proving the portability of that code structure, adding the Lyfecycle to be implemented as a part of the boot sequence of the robot with Nav2 and his sensors.
 Was corrected his estimation in rotation summing the estimation of the velocity given by the robot and the velocity given by the gyro and thanks to the AMCL was the error that was not possible to remove.
 $v_{yaw}$ of 320.0
 and for AMCL: $\alpha 1$ 0.01, $\alpha 2$ 0.001, $\alpha 3$ 0.001 and $\alpha 4$ 0.001
@@ -57,7 +57,7 @@ These are some images of the navigation of the 2 robots\\
 \end{figure}\\
 The result are promising and this is a solution that can be used in our workspace. We tested the patrol task and the robots moved through the building avoiding to create traffic jam and finding the best path.
 
-\chapter{Comparison of system performance \alert{before and after the porting process}}
+\chapter{\alert{Comparison of system performance before and after the porting process}\\Comparative analysis on the port system}
 This part is divided in section, in each section we evaluates the following:
 \begin{itemize}
 	\item calculation time for the planner on Mini rover
@@ -81,6 +81,7 @@ In this section, we present the time required for the global planner node to cal
 	\end{tabular}
 	\caption{result planner first request}
 \end{table}\\
+\alert{TO  UPDATE after build setting to release (update parameters)}\\
 After the first iteration:
 \begin{table}[h]
 	\centering
@@ -133,10 +134,10 @@ the result showed us:
 	\item without a fine tuning of the parameters of the Dstar planner hasn't returned an sub-optimal path
 \end{itemize}
 
-While porting we saw the possible advantages that have the Dstar algorith n respect of the NavfnPlanner especiatly in use with OpenRMF. It has an implemented a load from a file of paths\alert{ but these need to reverse ingegneer to wrote down a json file compatible with that}. A solution is to implement in the code a saving option for the planner and then save it to be loaded when the planner configure itself. 
+While porting we saw the possible advantages that have the Dstar algorith n respect of the NavfnPlanner especiatly in use with OpenRMF. A solution is to implement in the code a saving option for the planner and then save it to be loaded when the planner configure itself. 
  
 
-\alert{\section{comparisation jobot navigation}
+\alert{\section{comparisation jobot navigation\\ non è possibile testarlo}
 the test are performed using the same points as used before
 \begin{table}[h]
 	\centering
@@ -155,7 +156,7 @@ the test are performed using the same points as used before
 \end{table}
 we obtain the following conclusion}
 
-\alert{\chapter{TO REMOVE? ho descritto tutto in cap 12\\
+\alert{\chapter{ho descritto tutto in cap 12\\
 		Discussion on the challenges encountered and how they were addressed}
 the chalenges are:
 \begin{itemize}

@@ -172,9 +172,8 @@ The simulation configuration file contains minor differences due to the use of d
 In the next section, we will describe the key steps taken to port the global planner \texttt{DStarGlobalPlanner} from ROS 1 to ROS 2.
 \newpage 
 \subsection{Porting ROS 1 DStarGlobalPlanner to ROS 2}
-As previously mentioned, the \texttt{DStarGlobalPlanner}\footnote{\href{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2_port}{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2\_port}} is a implementation of the D* informed incremental search algoritm with external optimizers\cite{10.1007/978-3-031-67295-8_33} for the ROS 1 \texttt{move\_base} package\footnote{\href{https://wiki.ros.org/move_base}{https://wiki.ros.org/move\_base}} 
-\alert{and we want to analyze if there are some advantages of using this planner compared to the default planner.}\\
-Since the code is written using ROS 1\alert{, which is not compatible with ROS 2, it will need to be ported to the newer version}. This process was divided into two main phases. In the first phase, we migrated the base structure of the package from ROS 1 to ROS 2, following these ROS 2 porting guidelines \footnote{\href{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}}\footnote{\href{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}}. In the second phase, we adapted the code to comply with the structure required by Nav2 planner plugins, based on the Nav2 documentation titled: "Writing a New Planner Plugin"\footnote{\href{https://docs.nav2.org/plugin_tutorials/docs/writing_new_nav2planner_plugin.html}{https://docs.nav2.org/plugin\_tutorials/docs/writing\_new\_nav2planner\_plugin.html}}.
+As previously mentioned, the \texttt{DStarGlobalPlanner}\footnote{\href{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2_port}{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2\_port}} is a implementation of the D* informed incremental search algorithm\cite{overview_Route_Planning_Algorithms} with external optimizers\cite{10.1007/978-3-031-67295-8_33} for the ROS 1 \texttt{move\_base} package\footnote{\href{https://wiki.ros.org/move_base}{https://wiki.ros.org/move\_base}} and we want to analyze if there are some advantages of using this planner compared to the default planner.\\
+Since the code is written using ROS 1 , which is not compatible with ROS 2, it will need to be ported to the newer version. This process was divided into two main phases. In the first phase, we migrated the base structure of the package from ROS 1 to ROS 2, following these ROS 2 porting guidelines \footnote{\href{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}}\footnote{\href{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}}. In the second phase, we adapted the code to comply with the structure required by Nav2 planner plugins, based on the Nav2 documentation titled: "Writing a New Planner Plugin"\footnote{\href{https://docs.nav2.org/plugin_tutorials/docs/writing_new_nav2planner_plugin.html}{https://docs.nav2.org/plugin\_tutorials/docs/writing\_new\_nav2planner\_plugin.html}}.
 The following subsections describe these two phases in detail. The first focuses on the structural migration to ROS 2 and the integration into the Nav2 framework. The second details the modifications needed to adapt the planner logic and interfaces to match ROS 2 conventions and the plugin architecture.
 \subsubsection{Porting code from ROS 1 to ROS 2}
 In the \texttt{package.xml} file, which describe the package as an organizational unit for your ROS 2 code, the following changes were made:
@@ -403,17 +402,15 @@ Then we can connect to the web dashboard:
 
 \chapter{Testing and evaluation of the system}
 
-During the testing, we saw that the performance of odometry and localization were need to be improved with some parameters tuning.
-In the following paragraphs it will describe the method used and the changing parameters behavior on the output.
-We divided in two parts, the first is based on improving the estimation of the odometry, changing the parameters of the robot\_localization package without the correction of the AMCL node. Then, in the second part, using the new odometry, we setting the parameters for the AMCL node to estimate the real position of the robot in respect of the map.
-All is done using some recorder sensor data using the rosbag package described in the next section.
+During the testing, we saw that the performance of odometry and localization needed to be improved through some parameter tuning. In the following paragraphs, I will describe the method used and the effects of the changing parameters on the output.
+
+We divided the study into two parts; the first part is based on improving the estimation of the odometry by changing the parameters of the \texttt{robot\_localization} package without utilizing the correction of the AMCL node. Then, in the second part, we will set the parameters for the AMCL node to estimate the real position of the robot with respect to the map using the newly obtained odometry data. This process was conducted using recorded sensor data collected through the rosbag package, which is described in the next section.
 
 \section{Testing environment using Rosbag}
-To allow a better comparisation of the output results obtained changing the parameters we need a method to record the data and replay them. This solution in ROS ecosystem is the tool Rosbag2
-\footnote{\href{https://github.com/ros2/rosbag2}{https://github.com/ros2/rosbag2}} that allow to record and playback the communications in a ROS 2 system efficiently.\\
+To allow a better comparison of the output results obtained by changing the parameters, we need a method to record the data and replay it. This solution within the ROS ecosystem is the tool Rosbag2, which allows recording and playback of communications in a ROS 2 system efficiently.\\
 
-Also we controlled the robots publishing on the \texttt{/cmd\_vel} along the building following some path that can be interesting to be analyses.\\
-For the mini we followed this path for the changing of the parameters for the \texttt{robot\_localization} package, it's a long path and there is more turns:\\
+Additionally, we controlled the robots by publishing on the \texttt{/cmd\_vel}topic, following some paths that can be interesting to analyze.\\
+For the Mini, we followed this path for changing the parameters associated with the \texttt{robot\_localization} package; it’s a long path, and there are many turns:\\
 
 \begin{figure}[H]
 	\centering
@@ -421,7 +418,7 @@ For the mini we followed this path for the changing of the parameters for the \t
 	\captionof{figure}{path followed in record 001 for the mini}
 \end{figure}
 
-and this for setting the parameters for the AMCL node, because on the right side of the door, along the corridor, the door are closed:
+and this for setting the parameters for the AMCL node because,on the right side of the door, along the corridor, the doors are closed that can reduce the robot's ability to accurately determine its position, making it crucial to fine-tune the AMCL parameters accordingly:
 
 \begin{figure}[H]
 	\centering
@@ -429,7 +426,7 @@ and this for setting the parameters for the AMCL node, because on the right side
 	\captionof{figure}{path followed in record 007 for the mini}
 \end{figure}
 
-while for the Jobot the path is the following one, it has similarities with both of the mini but also we saw better performance of the robot odometry, so it was not necessary to hard test the system:\\
+While for the Jobot, the path is the following one, it has similarities with the paths recorded for the Mini. After moving through the hallway, the doors were closed to evaluate the effect on the AMCL.\\
 
 \begin{figure}[H]
 	\centering
@@ -438,20 +435,19 @@ while for the Jobot the path is the following one, it has similarities with both
 \end{figure}
 
 other recorder were made for validating the parameter choises.\\
-To record the data we use the command \texttt{ros2 bag record}.
-While or playing that data, we need to make publish to the \texttt{/clock} topic to avoid errors related to the difference in time of the recorded data and the system time : \texttt{"the timestamp on the message is earlier than all the data in the transform cache"}. This is available by the rosbag2 using the flag \texttt{--clock} that publish to \texttt{/clock}. This required to use the flag \texttt{use\_sim\_time} for all the nodes, like in simulation. 
+To record the data, we use the command \texttt{ros2 bag record}. While playing that data, we need to publish to the \texttt{/clock} topic to avoid errors related to the difference in time between the recorded data and the system time: “the timestamp on the message is earlier than all the data in the transform cache.” This is facilitated by rosbag2, using the flag \texttt{--clock} that publishes to \texttt{/clock}. This requires the flag \texttt{use\_sim\_time} for all the nodes, just like in simulation. 
 
-Also allow to reduce the time to test, we played the data with a rate 5 time higher with the following flag \texttt{-r 5} for the \texttt{robot\_localization} while for the AMCL with 2, this flag increase the output rate of each topic by n times. Tests were performed with a rate of 1 and 5 for multiple record and the output show that the results of the robot\_localization were similar and also in the case of the AMCL tests.\\
+To reduce the testing time, we played the data at a rate five times higher using the flag \texttt{-r 5} for \texttt{robot\_localization} , while for the AMCL we used \texttt{-r 2}; this flag increases the output rate of each topic by n times. Tests were performed with rates of 1 and 5 for multiple recordings, and the output showed that the results of \texttt{robot\_localization} were similar to those in the case of the AMCL tests.\\
 
-Now that we set the testing environment, the process of setting the parameters for the \texttt{robot\_localization} package is the follow.
+Now that we have set the testing environment, the process of setting the parameters for the \texttt{robot\_localization} package is as follows.
 
 
 \section{Parameters setting for the \texttt{robot\_localization}}
 
-For the analysis of the data of the \texttt{robot\_localization} we wanted to visualize the result of the \texttt{robot\_localization} node without the influency of the AMCL node, so we set all the $\alpha$ parameters that define the behavior of the AMCL node to 0.0. This allow us to visualize the position of the walls during the movements of the robot allowing to better understand his position and the type of error that the odometry has.
+For the analysis of the data from \texttt{robot\_localization} we wanted to visualize the results of the \texttt{robot\_localization} node without the influence of the AMCL node, so we set all the $\alpha$ parameters that define the behavior of the AMCL node to 0.0. This allowed us to visualize the position of the walls during the movements of the robot, allowing us to better understand its position and the type of error that the odometry exhibits.
 
-As described before, the \texttt{robot\_localization} contains an implementation of the extended Kalman filter that support multiple sensors and allow us to select with data fields are fused with the current state estimation and also gives the process noise covariance matrix $Q$ has a parameter to tuning it obtaining better performances.\\
-To better understand the dynamic of our changes in the parameters we describe in the following row the theory behind it.\\
+As described before, the \texttt{robot\_localization} package contains an implementation of the Extended Kalman Filter (EKF) that supports multiple sensors and allows us to select which data fields are fused with the current state estimation. It also provides its process noise covariance matrix $Q$ to tuning it obtaining better performances.\\
+To better understand the dynamics of our changes in the parameters, we describe in the following paragraph the theory behind it.\\
 We want to know the state $x$, given a non liner system $f$ with process noise $w$:
 \begin{align}
 	x_k &= f(x_{k-1})+w_{k-1}
@@ -484,40 +480,40 @@ where:\\
 - $R$ is the measurement noise covariance.\\
 - $K$ is the Kalman gain.\\
 
-In short words, the better the \textbf{omnidirectional motion model} of the\\ \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process\_noise\_covariance diagonal value for the variable in question, which will cause the filter's predicted error to be larger, which will cause the filter to trust the incoming measurement more during correction.
+In short, the better the \textbf{omnidirectional motion model} of the  \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process noise covariance diagonal value for the variable in question. This will cause the filter’s predicted error to be larger, leading the filter to trust the incoming measurement more during correction.
 
-In the next sections we described our procedure to tune them for the mini and for the Jobot.
+In the next sections we describe our procedure to tune these parameters for the Mini and for the Jobot.
 
 \subsection{Setting up the EKF of the mini}
 
-The mini gives us data from an IMU and the robot gives its estimated odometry from the robot.
+The data available for the Mini are the mounted IMU and its estimated odometry.
 
-And we obtain, without tuning:
+Using this data, and without any tuning, we obtain:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/odom_plot_before_changes.png}
 	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package (green)}
 \end{figure}
 
-The sensor avaible are:
+Next are listed some information about these data from the:\\
 IMU (topic \texttt{/imu/data} with a output frequency of 100 Hz)
 \begin{itemize}
-	\item orientation : cannot be used for a random error from the sensor as visible in this picture:
+	\item orientation : cannot be used for a random error from the sensor as visible in this picture.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.9\linewidth]{img/comparazione_heading_with_yawVel.png}
 		\captionof{figure}{Heading data from the \texttt{robot\_localization} (light blue), IMU orientation (green) and odometry from the robot (blue) versus the $v_{yaw}$ measured by the gyroscope of the IMU}
 	\end{figure}
 	\item gyroscopic : we use his data about $v_{yaw}$
-	\item acceleration : added a costant increment of the position and incremented the error, so it was not used.
+	\item acceleration : add a constant increment of the position and incremented the error, so it was not used.
 \end{itemize}
 odometry (topic \texttt{/odometry/wheels} with a output frequency of 15 Hz)
 \begin{itemize}
-	\item pose : it is not correct end an added a lot of error in the estimation.
-	\item velocity : it's also the input given to the robot and the direct information about velocity and so we take $v_{x}$ and $v_{y}$ from the data. $v_{yaw}$ was tried to be used but insert a lot of error in the estimation.
+	\item pose : it's not correct and add a lot of error in the estimation.
+	\item velocity : it’s also the input given to the robot, providing direct information about velocity, so we take $v_{x}$ and $v_{y}$ from the data. We tried to use $v_{yaw}$, but it introduced a lot of error in the estimation.
 \end{itemize}
 
-Choosed the input data to use, we tried changing the value of the process noise covariance $Q$ obtaining the best result for the different records, this test were performed using the record 001 where the start position is inside the office and the end is outside the door of the office (a distance of about 4 m) with a total length of about 187 m :
+After choosing the input data to use, we tried changing the values of the process noise covariance $Q$, obtaining the best results for the different recordings. This test was performed using record 001, where the start position is inside the office and the end is outside the door of the office (a distance of about 4 m) with a total length of about 187 m:
 
 \begin{table}[H]
 	\centering
@@ -573,7 +569,7 @@ All the test are displayed in the next graph:
 	\captionof{figure}{Results changing parameters of the process noise covariance using the record 001}
 \end{figure}
 
-We can saw that the best result are performed incrementing the value of the process covariance matrix for the $v_{yaw}$ while changing the other input has not changed the result. More test were performed with bigger and lower value of those variables but hasn't changed the outcome. So the best result is the following:
+We can see that the best results were achieved by incrementing the value of the process covariance matrix for  $v_{yaw}$, while changing the other inputs did not affect the results. More tests were performed with larger and smaller values of those variables, but they did not change the outcome. So, the best result is the following:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/result_001_ekf.png}
@@ -581,12 +577,12 @@ We can saw that the best result are performed incrementing the value of the proc
 	\label{result ekf mini with walls}
 \end{figure}
 
-We can see in the picture \ref{result ekf mini with walls} that the position along the direction estimated by the odometry is wrong, but changing the value in the process noise matrix didn't improved the estimation. This is some correction that the AMCL node is going to fix.
+We can see in Figure \ref{result ekf mini with walls} that the position along the direction estimated by the odometry is incorrect, but changing the value in the process noise matrix did not improve the estimation. This is a correction that the AMCL node is intended to address.
 
 \subsection{Setting up the EKF of the Jobot}
-Similar procedure from the Mini was performed for the Jobot.
-We discovered that in both of the records, the robot while moving through a fire door make a "jump" visible in the odometry, this can be caused by a little step needed for the fire door. 
-From some initial test is visible that the estimation of the length of the path followed by the robot is correct and so we focused our attention on the error in the rotation that is visible.
+A similar procedure to that used for the Mini was performed for the Jobot. We discovered that in both recordings, the robot, while moving through a fire door, makes a "jump" visible in the odometry. This may be caused by a small step needed to pass through the fire door.\\
+
+From some initial tests, it is evident that the estimation of the length of the path followed by the robot is correct, so we focused our attention on the observable error in rotation.
 
 The data of measure 000 was performed with only the $yaw$ of the odometry of the robot
 
@@ -596,7 +592,7 @@ The data of measure 000 was performed with only the $yaw$ of the odometry of the
 	\captionof{figure}{Estimation obtained with the $yaw$ of the Jobot's odometry}
 \end{figure}
 
-Saw the result and that the changes on the process noise covariance didn't change the results, was decided to remove it and see the result with the $v_{yaw}$ of only the IMU (data 001):\\
+Having seen the results and that the changes to the process noise covariance did not affect the outcomes, it was decided to remove this data and evaluate the results using $v_{yaw}$ from only the IMU (data 001):\\
 
 \begin{figure}[H]
 	\centering
@@ -604,7 +600,7 @@ Saw the result and that the changes on the process noise covariance didn't chang
 	\captionof{figure}{Estimation obtained with only the $v_{yaw}$ of the Jobot's IMU}
 \end{figure}
 
-It over estimate the position so we tried summing the $v_{yaw}$ of the IMU and of the odometry given by Jobot (data 002):\\
+It overestimates the position, so we tried summing $v_{yaw}$ from both the IMU and the odometry provided by the Jobot (data 002):\\
 
 \begin{figure}[H]
 	\centering
@@ -612,7 +608,7 @@ It over estimate the position so we tried summing the $v_{yaw}$ of the IMU and o
 	\captionof{figure}{Estimation obtained with both the $v_{yaw}$}
 \end{figure}
 
-Since this was the best outcome, we decided to change the process noise covariance.\\ All the result are:
+Since this was the best outcome, we decided to change the process noise covariance.\\ All the results are:
 
 \begin{table}[H]
 	\centering
@@ -643,7 +639,8 @@ Since this was the best outcome, we decided to change the process noise covarian
 \end{table}
 
 
-We obtain the best result with a value on the process noise covariance of 320. And the best outcome is visible in the following picture:\\
+We obtained the best result with a value of 320 for the process noise covariance for the value of $v_{yaw}$.\\
+The best outcome is visible in the following figure:\\
 
 
 \begin{figure}[H]
@@ -756,7 +753,7 @@ And this is the data plotted:
 
 \subsection{Setting up the AMCL for the Jobot}
 
-As said before, in both the record, when the robot passed the fire door, it "jumped" and create an error in the estimation. We keep that information and see how the amcl package recover from that jump.
+As said before, in both the record, when the robot passed the fire door, it "jumped" and create an error in the estimation. We keep that information and see how the AMCL package recover from that jump.
 For the record 001, the one we are going to use in our test, the difference in distance from the start position and the end is around 0.6 m .
 
 As visible in picture \ref{Ottimal result obtained visualized in Rviz}, the error to correct is the angular position that is generated during rotation around of axis, so as already described, we need to change the parameter $\alpha 1$, \textit{Expected process noise in odometry’s rotation estimate from rotation}. So, for these test we are going to increase that value and see how the output change.
@@ -866,9 +863,9 @@ Alternatively, adding a depth camera could provide a 3D occupancy grid, which ca
  \item assign each robot with a \texttt{namespace},
  \item associated each robot with a unique \texttt{ROS\_DOMAIN\_ID}.
 \end{itemize}
-the solution that better apply us and the one is adopted in the Free Fleet package is the use the \texttt{ROS\_DOMAIN\_ID}. This was also applied in the simulation. Then all important topic are share through the zenoh plugin as described before. 
+the solution that better apply us and the one is adopted in the Free Fleet package is the use the \texttt{ROS\_DOMAIN\_ID}. This was also applied in the simulation. Then all important topic are share through the zenoh plugin as described before.
 
-\item The D-star planner is not designed if its path is getting blocked  by an object that was not visible before. This is because it don't update the costmap used internally in the code at each request of the planner that inform the planner that a new obstacle was fond. 
+\item The D-star algorithm does not perform effectively within the ROS 2 planner ecosystem because the map update procedure does not allow the planner to detect obstacles, this implementation has been included in the roadmap.
 
 \item An increment in the security is the setting up collision monitor for improve safety reason. This node use the information of some sensor and reduce the velocity sended to the robot in funcion of near obstacle.
 
