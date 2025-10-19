@@ -352,7 +352,7 @@ It uses \texttt{zenoh} as a communication layer between each robot and the fleet
 Below is an overview of how communication is managed using the Free Fleet adapter:
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\linewidth]{img/free\_fleet\_adapter.png}
+	\includegraphics[width=1.0\linewidth]{img/free_fleet_adapter.jpg}
 	\captionof{figure}{Free Fleet Adapter Communication}
 \end{figure}
 \subsection{Setup fleet}
@@ -489,7 +489,7 @@ The data available for the Mini are the mounted IMU and its estimated odometry.
 Using this data, and without any tuning, we obtain:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/odom_plot_before_changes.png}
+	\includegraphics[width=1.0\linewidth]{img/odom_plot_before_changes.png}
 	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package (green)}
 \end{figure}
 
@@ -499,7 +499,7 @@ IMU (topic \texttt{/imu/data} with a output frequency of 100 Hz)
 	\item orientation : cannot be used for a random error from the sensor as visible in this picture.
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.9\linewidth]{img/comparazione_heading_with_yawVel.png}
+		\includegraphics[width=1\linewidth]{img/comparazione_heading_with_yawVel.png}
 		\captionof{figure}{Heading data from the \texttt{robot\_localization} (light blue), IMU orientation (green) and odometry from the robot (blue) versus the $v_{yaw}$ measured by the gyroscope of the IMU}
 	\end{figure}
 	\item gyroscopic : we use his data about $v_{yaw}$
@@ -517,7 +517,7 @@ After choosing the input data to use, we tried changing the values of the proces
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		$v_x$ & $v_y$ & $v_{yaw}$ & data name & diff start end (m) \\
+		$v_x$ (-) & $v_y$ (-) & $v_{yaw}$ (-) & data name & diff start end (m) \\
 		\hline
 		0.001 & 0.001 & 0.001 & 000& 12.36\\
 		\hline
@@ -555,7 +555,7 @@ Some of the results:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/plot_odom_withVyawOdom_01.png}
+	\includegraphics[width=1.0\linewidth]{img/plot_odom_withVyawOdom_01.png}
 	\captionof{figure}{Results from data 005}
 \end{figure}
 
@@ -563,14 +563,14 @@ All the test are displayed in the next graph:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/all_ekf_estimation.png}
+	\includegraphics[width=1.0\linewidth]{img/all_ekf_estimation.png}
 	\captionof{figure}{Results changing parameters of the process noise covariance using the record 001}
 \end{figure}
 
 We can see that the best results were achieved by incrementing the value of the process covariance matrix for  $v_{yaw}$, while changing the other inputs did not affect the results. More tests were performed with larger and smaller values of those variables, but they did not change the outcome. So, the best result is the following:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/result_001_ekf.png}
+	\includegraphics[width=1.0\linewidth]{img/result_001_ekf.png}
 	\captionof{figure}{Best result for the Mini with the information of walls position}
 	\label{result ekf mini with walls}
 \end{figure}
@@ -610,7 +610,7 @@ Since this was the best outcome, we decided to change the process noise covarian
 	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
-		$v_{yaw}$ & record name & diff start end (m) \\
+		$v_{yaw}$ (-) & record name & diff start end (m) \\
 		\hline
 		- & 000 & 14.28\\
 		\hline
@@ -650,7 +650,7 @@ The plotted data are:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/jobot_ekf_full.png}
+	\includegraphics[width=1.0\linewidth]{img/jobot_ekf_full.png}
 	\captionof{figure}{Results from the tuning of the process noise covariance for the Jobot plotted}
 \end{figure}
 
@@ -681,7 +681,7 @@ The results are shown below, with the first row displaying the data from odometr
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
-		$\alpha 1$ & $\alpha 2$ & $\alpha 3$ & $\alpha 4$ & distance (m) & data name\\
+		$\alpha 1$ (-) & $\alpha 2$ (-) & $\alpha 3$ (-) & $\alpha 4$ (-) & distance (m) & data name\\
 		\hline		
 		0.0 & 0.0 & 0.0 & 0.0 & 1.92 &  - \\
 		\hline
@@ -738,7 +738,7 @@ The table shows that without adding the correction for rotation, the translation
 And this is the data plotted:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/final_result_and_correction_XY.png}
+	\includegraphics[width=1.0\linewidth]{img/final_result_and_correction_XY.png}
 	\captionof{figure}{best result mini data plotted}
 \end{figure}
 
@@ -751,7 +751,7 @@ As mentioned before, in both records, when the robot passed the fire door, it "j
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
-		$\alpha 1$ & $\alpha 2$ & $\alpha 3$ & $\alpha 4$ & distance (m) & data name\\
+		$\alpha 1$ (-) & $\alpha 2$ (-) & $\alpha 3$ (-) & $\alpha 4$ (-) & distance (m) & data name\\
 		\hline
 		0.0 & 0.0 & 0.0 & 0.0 & 1.63 &  - \\
 		\hline
@@ -793,7 +793,7 @@ It was also tested on record 002, which was created with the intention of genera
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{img/record2.png}
+	\includegraphics[width=1.0\linewidth]{img/record2.png}
 	\captionof{figure}{Result of the Jobot with record 002}
 \end{figure}
 
