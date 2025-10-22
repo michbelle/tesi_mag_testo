@@ -59,8 +59,8 @@ With the system fully assembled, the following ROS 2 launch files, from the pack
 \newpage
 While, for simulation, the following launch files, from the package \texttt{mini\_simulation}, can be used for starting the simulation:
 \begin{itemize}
-	\item \texttt{0s\_ign\_spawn\_world\_gazebo.launch.py}: That launch gazebo with the a world.
-	\item \texttt{1s\_ign\_spawn\_mini\_gazebo.launch.py}: Spawn the model of the robot in gazebo and with all sensors and launch the \texttt{ros\_gz\_bridge/parameter\_bridge} node is used to share simulated data between Gazebo and the ROS 2 environment.
+	\item \texttt{0s\_ign\_spawn\_world\_gazebo.launch.py}: That launch Gazebo with the world.
+	\item \texttt{1s\_ign\_spawn\_mini\_gazebo.launch.py}: Spawn the model of the robot with all sensors in gazebo and launch the \texttt{ros\_gz\_bridge/parameter\_bridge} node that is used to share simulated data between Gazebo and the ROS 2 environment.
 \end{itemize}
 \begin{figure}[h]
 	\centering
@@ -73,23 +73,23 @@ While, for simulation, the following launch files, from the package \texttt{mini
 In this chapter, we outline the requirements for the operation of Nav2 and provide a comprehensive overview of the packages utilized by Nav2. Particular emphasis is placed on the process of porting the Global Planner module from ROS 1 to ROS 2, with a detailed discussion of the required adaptations and the challenges encountered during the transition.
 
 \section{Odometry Estimation \texttt{odom} $\rightarrow$ \texttt{base\_link}}
-As previously discussed, the raw odometry data provided by the rover are not sufficiently accurate, particularly in rotational movements\cite{MooreStouchKeneralizedEkf2014}. This is a well-known issue in odometry estimation for skid-steering vehicles, which tend to produce significant drift and errors when turning using only the data from the encoders.\\
+As previously discussed, the raw odometry data provided by the rover are not sufficiently accurate, particularly in rotational movements. This is a well-known issue in odometry estimation for skid-steering vehicles, which tend to produce significant drift and errors when turning using only the data from the encoders.\\
 To address this problem, the \texttt{robot\_localization} package\cite{MooreStouchKeneralizedEkf2014} was employed, specifically its \texttt{ekf\_node} Node.
 This package enables the fusion of multiple sensor, even multiple instances of the same sensor type, and supports output in various ROS message formats, such as \texttt{nav\_msgs/Odometry}. It also allows preprocessing of sensor messages prior to inserting into the estimation process. The filter performs continuous state estimation and is robust to intermittent sensor data loss, maintaining a coherent position estimate over time.\\
-To launch the EKF node, the following launch file was wrote:\\
+To launch the EKF node, the following launch file from the package \texttt{mini\_launchpad} was wrote:\\
 \hspace*{10mm}\texttt{1<r/s>\_robot\_localizationEKF.launch.py}
 
 \subsection{Configuration Odometry Estimation in \texttt{ekf\_node}}
 As previously described and detailed in the node’s documentation\footnote{\href{https://docs.ros.org/en/noetic/api/robot_localization/html/index.html}{https://docs.ros.org/en/noetic/api/robot\_localization/html/index.html}}, we added the information about the sensors used to the configuration file. The principal information to include is the type of sensor and on which topic subscribe, \texttt{odom0:odometry/wheels} and \texttt{imu0:imu/data}, and, for each sensor, we need to choose which components of the state measurement data we want to fuse using the following array by setting the corresponding values to \texttt{true} for those we wish to include and \texttt{false} for those we do not:\\
 \texttt{sensorX\_config}:$ [X, Y, Z, roll, pitch, yaw, \dot{X}, \dot{Y}, \dot{Z}, \dot{roll}, \dot{pitch}, \dot{yaw}, \ddot{X}, \ddot{Y}, \ddot{Z}] $\\
 Additionally, the process noise covariance matrix $ Q $ can be tuned. This matrix represents the noise we add to the total error after each prediction step. Generally, the larger the value of $ Q $ relative to the variance of a given variable in an input message, the faster the filter will converge to the value indicated by the measurement.\\
-More information on the testing and the parameters analysis are described in the chapter Testing and Evaluation \ref{test_and_evaluation} 
+More information on the testing and the parameters analysis are described in the chapter Testing and Evaluation \ref{test_and_evaluation} .
 
 
 \section{Localization \texttt{map} $\rightarrow$ \texttt{odom}}
-In this section, we describe the process of acquiring a map and establishing the transformation between the \texttt{map} frame and \texttt{odom} frame using a localization method. This is necessary because, for long-term operation, the position of the robot in the world, using only odometry data, tends to accumulate errors and is not sufficiently accurate. Therefore, a localization technique is required to compensate for these errors\cite{sh-p1-prelude}.
+In this section, we describe the process of acquiring a map and establishing the transformation between the \texttt{map} frame and \texttt{odom} frame using a localization method. This is necessary because, for long-term operation, the position of the robot in the world, using only odometry data, tends to accumulate errors and is not sufficiently accurate. Therefore, a localization technique is required to compensate for these errors.
 \subsection{Mapping}
-Although a map is already available, for completeness we provide instructions to run the following SLAM packages: \texttt{slam\_toolbox}\cite{Macenski2021} (GitHub: SteveMacenski/slam\_toolbox\footnote{\href{https://github.com/SteveMacenski/slam_toolbox/tree/ros2}{https://github.com/SteveMacenski/slam\_toolbox/tree/ros2}}) and \texttt{cartographer\_ros}\cite{45466} (GitHub: ros2/cartographer\_ros\footnote{\href{https://github.com/cartographer-project/cartographer_ros}{https://github.com/cartographer-project/cartographer\_ros}}). These packages can be launched using the following launch files:\\
+Although a map is already available, we will describe the process of constructing a map using the Simultaneous Localization And Mapping (\textbf{SLAM}) technique\cite{sh-p1-prelude}. Below, we provide instructions for running the following SLAM packages: \texttt{slam\_toolbox}\cite{Macenski2021} (GitHub: SteveMacenski/slam\_toolbox\footnote{\href{https://github.com/SteveMacenski/slam_toolbox/tree/ros2}{https://github.com/SteveMacenski/slam\_toolbox/tree/ros2}}) and \texttt{cartographer\_ros}\cite{45466} (GitHub: ros2/cartographer\_ros\footnote{\href{https://github.com/cartographer-project/cartographer_ros}{https://github.com/cartographer-project/cartographer\_ros}}). These packages can be launched from the \texttt{mini\_launchpad} using the following launch files:\\
 \hspace*{10mm} \texttt{X<r/s>\_mappingW<slam/cartographer>.launch.py} \\
 To save the generated map, use the following command, which works for both  \texttt{slam\_toolbox} and \texttt{cartographer\_ros}. This will save the map as two files:  a \texttt{.pgm} image and a \texttt{.yaml} metadata file:\\
 \hspace*{10mm} \texttt{ros2 run nav2\_map\_server map\_saver\_cli -f map}\\
@@ -98,7 +98,8 @@ When using Cartographer, it is also possible to save the map as a \texttt{.pdstr
     \hspace*{15mm}"\{filename: "map.pdstream", include\_unfinished\_submaps :false\}"}
 \newpage
 \subsection{Only localization}
-The map create using Cartographer was obtained by the robot Jobot while navigating through Building T of Elettra, which serves as an office building. The map is as follows:
+Since we have already a map we only need to focus on localization. The map in use was created using Cartographer by the robot Jobot while navigating through Building T of Elettra, which serves as an office building.
+The map is:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.4\linewidth]{img/map.png}
@@ -122,7 +123,7 @@ The corrected map is shown below:
 	\includegraphics[width=0.4\linewidth]{img/mapV.png}
 	\captionof{figure}{Map edited with Gimp and used}
 \end{figure}\\
-With the map properly adjusted, all necessary tools for localization are now available. We created the following launch file to initiate localization:\\
+With the map properly adjusted, all necessary tools for localization are now available. We created the following launch file in the package \texttt{mini\_launchpad} to initiate localization:\\
 \hspace*{10mm} \texttt{3<r/s>\_L<amcl/Cartographer>.launch.py}
 
 At this stage, all requirements are met to utilize the Nav2 navigation stack.
@@ -130,11 +131,12 @@ At this stage, all requirements are met to utilize the Nav2 navigation stack.
 In this section, we will discuss the components used in the Nav2 navigation stack and describe the process of porting the Global Planner from ROS 1 to ROS 2.
 \subsection{Navigation Launch file}
 The launch file contains all the necessary processes required for the  Navigation stack Nav2 to operate. It also implement the composition structure (\ref{Composition}) and the lifecycle manager (\ref{LifecycleNode}).
-Below is a list of the core components used, along with a brief description of the plugins associated with each. Additional documentation can be found in  \footnote{\href{https://docs.nav2.org/setup_guides/algorithm/select_algorithm.html}{https://docs.nav2.org/setup\_guides/algorithm/select\_algorithm.html}} , and a migration guide is available in\footnote{\href{https://docs.nav2.org/migration/index.html}{https://docs.nav2.org/migration/index.html}} :
+Below is a list of the core components used, along with a brief description of the plugins associated with each.
+Additional information can be found in this documentation\footnote{\href{https://docs.nav2.org/setup_guides/algorithm/select_algorithm.html}{https://docs.nav2.org/setup\_guides/algorithm/select\_algorithm.html}} , and a migration guide is available in this documentation\footnote{\href{https://docs.nav2.org/migration/index.html}{https://docs.nav2.org/migration/index.html}} :
 \begin{itemize}
 	\item \texttt{nav2\_controller::ControllerServer} that use the following plugins:
 	\begin{itemize}
-		\item As \texttt{controller\_plugins} use \texttt{nav2\_mppi\_controller::MPPIController}: a Model Predictive Path Integral (MPPI)\cite{7487277} algorithm to track a path with adaptive collision avoidance.
+		\item As \texttt{controller\_plugins} use \texttt{nav2\_mppi\_controller::MPPIController}: a Model Predictive Path Integral (MPPI)\cite{7487277} algorithm to track a path with adaptive collision avoidance or use the \texttt{dwb\_core::DWBLocalPlanner} : that use the Dynamic Window Approach \cite{580977}
 		
 		\item As \texttt{progress\_checker\_plugins} use\\ \texttt{nav2\_controller::SimpleProgressChecker} that checks whether the robot has made positional progress.
 		
@@ -164,13 +166,13 @@ Below is a list of the core components used, along with a brief description of t
 		\item As \texttt{navigators} use\\ \texttt{nav2\_bt\_navigator::NavigateToPoseNavigator} and\\ \texttt{nav2\_bt\_navigator::NavigateThroughPosesNavigator} that utilize the default behavior trees (BT) for navigation.
 	\end{itemize}
 	
-	\item \texttt{nav2\_lifecycle\_manager::LifecycleManager} that handling the lifecycle transition states for the stack in a deterministic way.
+	\item \texttt{nav2\_lifecycle\_manager::LifecycleManager} that handle the lifecycle transition states for the stack in a deterministic way.
 \end{itemize}
 The simulation configuration file contains minor differences due to the use of different versions of ROS 2: Jazzy in the simulated environment and Humble on the physical robot.
 In the next section, we will describe the key steps taken to port the global planner \texttt{DStarGlobalPlanner} from ROS 1 to ROS 2.
 \newpage 
 \subsection{Porting ROS 1 DStarGlobalPlanner to ROS 2}
-As previously mentioned, the \texttt{DStarGlobalPlanner}\footnote{\href{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2_port}{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2\_port}} is a implementation of the D* informed incremental search algorithm\cite{overview_Route_Planning_Algorithms} with external optimizers\cite{10.1007/978-3-031-67295-8_33} for the ROS 1 \texttt{move\_base} package\footnote{\href{https://wiki.ros.org/move_base}{https://wiki.ros.org/move\_base}} and we want to analyze if there are some advantages of using this planner compared to the default planner.\\
+As previously mentioned, the \texttt{DStarGlobalPlanner}\footnote{\href{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2_port}{https://github.com/ElettraSciComp/DStar-Trajectory-Planner/tree/ros2\_port}} is a implementation of the D* informed incremental search algorithm\cite{overview_Route_Planning_Algorithms} with external optimizers\cite{10.1007/978-3-031-67295-8_33} for the ROS 1 \texttt{move\_base} package\footnote{\href{https://wiki.ros.org/move_base}{https://wiki.ros.org/move\_base}}.\\
 Since the code is written using ROS 1 , which is not compatible with ROS 2, it will need to be ported to the newer version. This process was divided into two main phases. In the first phase, we migrated the base structure of the package from ROS 1 to ROS 2, following these ROS 2 porting guidelines \footnote{\href{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}{https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1.html}}\footnote{\href{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}{https://industrial-training-master.readthedocs.io/en/melodic/\_source/session7/ROS1-to-ROS2-porting.html}}. In the second phase, we adapted the code to comply with the structure required by Nav2 planner plugins, based on the Nav2 documentation titled: "Writing a New Planner Plugin"\footnote{\href{https://docs.nav2.org/plugin_tutorials/docs/writing_new_nav2planner_plugin.html}{https://docs.nav2.org/plugin\_tutorials/docs/writing\_new\_nav2planner\_plugin.html}}.
 The following subsections describe these two phases in detail. The first focuses on the structural migration to ROS 2 and the integration into the Nav2 framework. The second details the modifications needed to adapt the planner logic and interfaces to match ROS 2 conventions and the plugin architecture.
 \subsubsection{Porting code from ROS 1 to ROS 2}
@@ -238,15 +240,15 @@ After successful compilation, the global planner is ready for use within the Nav
 
 Elettra has also a Jobot, a 2WD rover still based on ROS 1, it was decided to port it to ROS 2 in order to effectively evaluate the use of Open-RMF.
 \section{Jobot Description}
-Jobot is a 6-wheeled rover with a 2WD configuration. It is equipped with a mini PC that collects data from an RPLIDAR A2 laser sensor and acceleration data from a serial bus connected to an Arduino microprocessor, which is linked to an IMU. An image of the robot is available in \ref{fig:Jobot Rover}:\\
-The steps taken to port the code in ROS 2 are described in the following section.
+Jobot is a 6-wheeled AMR with a 2WD configuration. It is equipped with a mini PC that collects data from an RPLIDAR A2 laser sensor and acceleration data from a serial bus connected to an Arduino microprocessor, which is linked to an IMU. An image of the robot is available in \ref{fig:Jobot Rover}.
+The steps taken to port the code in ROS 2 are described in the following section. When porting the system we used the same design for navigation and control that was used when build the first time\cite{10.1007/978-3-031-67295-8_33}. 
 
 \section{What changes where made in the code}
 
 The code use the serial ROS 1 library to communicate to the Arduino and retrieve the data from the encoders and the IMU. This library is no longer available in ROS 2, so to avoid rewriting the structure of the Jobot code, we utilized the same library that has been ported to ROS 2, which is available on GitHub: 
 https://github.com/iwelch82/serial-ros2.git .
 The retrieved data is used to publish the odometry pose estimation of the robot, while a secondary node handles the IMU data.\\
-The secondary node for publishing the IMU data was updated to ROS 2 by simply using the base node logic, whereas the main node was rewritten using the lifecycle structure. This logic is employed to configure the node during the on\_configure method, and if it fails or a request for deactivation or cleanup is made, it stops and cleans everything. This structure allow to remotely control the passage through the states, for now and in our case it will be connected to an automatic Node manager used in nav2, the \texttt{lifecycle\_manager} in \texttt{nav2\_lifecycle\_manager}. This node check all the states of the nodes that are connected to it and sequentially configures and activates them. If a crash occurs or if we stop a specific node's process, the lifecycle communicates the change of state and activates a procedure to stop the connected nodes. This node is only called in the launch file.\\
+The node that publish the IMU data was updated to ROS 2 by simply using the base node logic, whereas the main node was rewritten using the lifecycle structure. This logic is employed to configure the node during the on\_configure method, and if it fails or a request for deactivation or cleanup is made, it stops and cleans everything. This structure allow to remotely control the passage through the states, for now and in our case it will be connected to an automatic Node manager like the one used in Nav2, the \texttt{lifecycle\_manager} in \texttt{nav2\_lifecycle\_manager}. This node check all the states of the nodes that are connected to it and sequentially configures and activates them. If a crash occurs or if we stop a specific node's process, the lifecycle communicates the change of state and activates a procedure to stop the connected nodes. This node is only called in the launch file.\\
 In addiction we updates the custom messages to ROS 2 that the Jobot use internally.\\
 Once everything is configured, the node starts to publish the robot's state odometry but does not publish static transforms between the sensors. These transforms are manually published using the \texttt{static\_transform\_publisher} provided by \texttt{tf2\_ros}.\\
 
@@ -263,17 +265,25 @@ Since Jobot has a 2WD configuration, we will add two cylinders as wheels, which 
 Next, we add the sensors gazebo type\texttt{IMU} and \texttt{gpu\_lidar} to simulate the IMU and the lidar on the robot. This procedure is similar to the one used for the Mini Rover from the Rover Robotics.
 At the end we obtain the following model:
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\linewidth]{img/jobot_tf_strucure.png}
 	\captionof{figure}{Jobot robot URDF model}
 \end{figure}
 
+For launching the sensor and the robot similar code is used. In the package:
+\begin{itemize}
+	\item \texttt{jobot\_driver\_ros2}: there is the code for controlling the Jobot.
+	\item \texttt{jobot\_launchpad}: the code used to launch Nav2.
+	\item \texttt{jobot\_msgs}: the custom msgs used by Jobot. 
+	\item \texttt{jobot\_simulation}: all the code to simulate the Jobot in Gazebo.
+\end{itemize} 
+
 
 \chapter{Integration of the navigation stack with Open-RMF}
-To integrate a fleet in Open-RMF, we first need information about the building's infrastructure, such as automatic doors or lifts that can be controlled, and the \textbf{route maps} that robots can use. \textbf{Route maps} are essential for predicting the paths robots will take, enabling Open-RMF to perform effective \textbf{traffic management} and avoid conflicts. All these information have to be stored in a file that can be generated using the \textbf{traffic editor tool}\footnote{\href{https://github.com/open-rmf/rmf\_traffic\_editor}{https://github.com/open-rmf/rmf\_traffic\_editor}}  \footnote{\href{https://osrf.github.io/ros2multirobotbook/intro.html}{https://osrf.github.io/ros2multirobotbook/intro.html}}, a tool provided by Open-RMF. The following section describes how the Traffic Editor works and how we used it in our implementation.
+To integrate a fleet in Open-RMF, we first need information about the building's infrastructure, such as automatic doors or lifts that can be controlled and the \textbf{route maps} that robots can use. \textbf{Route maps} are essential for predicting the paths robots will take, enabling Open-RMF to perform effective \textbf{traffic management} and avoid conflicts. All these information have to be stored in a file that can be generated using the \textbf{traffic editor tool}\footnote{\href{https://github.com/open-rmf/rmf\_traffic\_editor}{https://github.com/open-rmf/rmf\_traffic\_editor}}  \footnote{\href{https://osrf.github.io/ros2multirobotbook/intro.html}{https://osrf.github.io/ros2multirobotbook/intro.html}}, a tool provided by Open-RMF. The following section describes how the Traffic Editor works and how we used it in our implementation.
 \section{Traffic Management - Route Maps Generation}
-To begin describing the environment for Open-RMF, we created a new project in the Traffic Editor by generating a \texttt{.building.yaml} file. We then imported both the map produced by Cartographer and the floor plan of the facility.After importing the map,we defined the positions of key elements and planned the traffic flow for the floor, following best practices as outlined in the Open-RMF documentation\footnote{\href{https://osrf.github.io/ros2multirobotbook/integration\_nav-maps-strategies.html}{https://osrf.github.io/ros2multirobotbook/integration\_nav-maps-strategies.html}}. The following components of the Traffic Editor were used to encode the necessary environment data:
+To begin describing the environment for Open-RMF, we created a new project in the Traffic Editor by generating a \texttt{.building.yaml} file. We then imported both the map produced by Cartographer and the floor plan of the facility. After importing the map,we defined the positions of key elements and planned the traffic flow for the floor, following best practices as outlined in the Open-RMF documentation\footnote{\href{https://osrf.github.io/ros2multirobotbook/integration\_nav-maps-strategies.html}{https://osrf.github.io/ros2multirobotbook/integration\_nav-maps-strategies.html}}. The following components of the Traffic Editor were used to encode the necessary environment data:
 \begin{itemize}
 	\item \textbf{vertex}: They are waypoints or a part of the description of walls, doors or else. Each vertex can have several properties:
 	\begin{itemize}
@@ -292,7 +302,7 @@ To begin describing the environment for Open-RMF, we created a new project in th
 	\item \texttt{door}: Connects two vertex and is used for interacting with the real world and simulate doors. If a robot encounters a door on its route, RMF sends a command to open it. When generating the simulation world model, a controllable door model is automatically added.
 	\item \texttt{traffic lane}: Connects two waypoints and define the paths that fleets will follow. Lanes can be grouped, assigned to specific fleets, and configured as unidirectional or bidirectional. An optional "orientation" setting can be specified to require robots to move forward or backward along the lane. During planning, Open-RMF assumes that all traffic lanes are straight lines.
 	\item \texttt{fiducials}: Used for multi-floor alignment and as anchors for the ROS 2 map. They provide spatial reference points between floors.
-	\item \texttt{lift}: Is used for interacting with the real world and simulate elevators. If a robot goes to a lift, RMF sends a command to call it and, when the robot reach the waypoint, it send the lift to the designed floor. When generating the simulation world model, a controllable lift model is automatically added.
+	\item \texttt{lift}: Is used for interacting with the real world and simulate elevators. If a robot goes to a lift, RMF sends a command to call it at the floor the robot is and, when the robot reach the waypoint inside it, then RMF send the lift to the designed floor. When generating the simulation world model, a controllable lift model is automatically added.
 	\item \texttt{walls}: Connect two waypoints to define the location of a wall in the environment. When generating the simulation world, a wall is created between these points.
 	\item \texttt{floor}:  Add the ground plane for robots in the simulation world. This component can be modified to include holes (e.g., for elevator shafts).
 	\item \texttt{environment assets}: Adds Gazebo models of various furniture and objects to the simulation, helping to create a realistic environment for testing and validation.
@@ -331,12 +341,12 @@ The simulation environment generated from the configuration resulted in the foll
 We can now launch the core components of RMF.
 
 \section{RMF core}
-This is the launch file used to start the core components of RMF:\\
+This is the launch file inside the \texttt{rmf\_server\_elettra} used to start the core components of RMF:\\
 \texttt{0\_rmf\_core.launch.xml}\\
 
 This launch file starts the following nodes, which form the core structure of RMF:
 \begin{itemize}
-	\item \texttt{rmf\_traffic\_schedule} : Manages traffic scheduling by controlling path structures, publishing itinerary topics, and handling conflict resolution.
+	\item \texttt{rmf\_traffic\_schedule} : Manages traffic scheduling by controlling path structures, publishing itinerary topics and handling conflict resolution.
 	\item \texttt{rmf\_traffic\_blockade} : Acts as the Traffic Blockade Moderator, managing checkpoint information.
 	\item \texttt{building\_map\_server} : Publishes map data, including points of interest such as parking spots.
 	\item \texttt{visualization.launch.xml}: Optional nodes that launches visualization tools for monitoring and controlling RMF via rviz2.
@@ -407,9 +417,9 @@ Then, in the second part, we will set the parameters for the AMCL node to estima
 \section{Testing environment using Rosbag}
 To allow a better comparison of the output results obtained by changing the parameters, we need a method to record the data and replay it. This solution within the ROS ecosystem is the tool Rosbag2, which allows recording and playback of communications in a ROS 2 system efficiently.\\
 
-Additionally, we controlled the robots by publishing on the \texttt{/cmd\_vel}topic, following some paths that can be interesting to analyze.\\
+During the recording, we controlled the robots by publishing on the \texttt{/cmd\_vel} topic using a joystick, following some paths that can be interesting to analyze. The path are the following:\\
 \newpage
-For the Mini, we followed this path for changing the parameters associated with the \texttt{robot\_localization} package; it’s a long path, and there are many turns:\\
+For the Mini, we followed a long path with many turns for changing the parameters associated with the \texttt{robot\_localization} package:\\
 
 \begin{figure}[H]
 	\centering
@@ -417,7 +427,7 @@ For the Mini, we followed this path for changing the parameters associated with 
 	\captionof{figure}{path followed in record 001 for the mini}
 \end{figure}
 
-and this for setting the parameters for the AMCL node because,on the right side of the door, along the corridor, the doors are closed that can reduce the robot's ability to accurately determine its position, making it crucial to fine-tune the AMCL parameters accordingly:
+and this one for setting the parameters for the AMCL node because,on the right side of the door, along the corridor, the doors are closed and can reduce the robot's ability to accurately determine its position, making it crucial to fine-tune the AMCL parameters accordingly:
 
 \begin{figure}[H]
 	\centering
@@ -425,7 +435,7 @@ and this for setting the parameters for the AMCL node because,on the right side 
 	\captionof{figure}{path followed in record 007 for the mini}
 \end{figure}
 \newpage
-While for the Jobot, the path is the following one, it has similarities with the paths recorded for the Mini. After moving through the hallway, the doors were closed to evaluate the effect on the AMCL.\\
+While for the Jobot, the path is the following one, it has similarities with the paths recorded for the Mini. After moving through the hallway, the doors were closed to evaluate how much will it affect the AMCL.\\
 
 \begin{figure}[H]
 	\centering
@@ -433,17 +443,17 @@ While for the Jobot, the path is the following one, it has similarities with the
 	\captionof{figure}{path followed during record 001 for the jobot}
 \end{figure}
 
-other recorder were made for validating the parameter choises.\\
-To record the data, we use the command \texttt{ros2 bag record}. While playing that data, we need to publish to the \texttt{/clock} topic to avoid errors related to the difference in time between the recorded data and the system time: “the timestamp on the message is earlier than all the data in the transform cache.” This is facilitated by rosbag2, using the flag \texttt{--clock} that publishes to \texttt{/clock}. This requires the flag \texttt{use\_sim\_time} for all the nodes, just like in simulation. 
+Other records were made for validating the parameter choises.\\
+To record the data, we use the command \texttt{ros2 bag record}. While for playing, we need to publish to the \texttt{/clock} topic to avoid errors related to the difference in time between the recorded data and the system time: “the timestamp on the message is earlier than all the data in the transform cache.” This is facilitated by rosbag2, using the flag \texttt{--clock} that publishes to \texttt{/clock}. This requires the flag \texttt{use\_sim\_time} for all the nodes, just like in simulation. 
 
-To reduce the testing time, we played the data at a rate five times higher using the flag \texttt{-r 5} for \texttt{robot\_localization} , while for the AMCL we used \texttt{-r 2}; this flag increases the output rate of each topic by n times. Tests were performed with rates of 1 and 5 for multiple recordings, and the output showed that the results of \texttt{robot\_localization} were similar to those in the case of the AMCL tests.\\
+To reduce the testing time, we played the data at a rate five times higher using the flag \texttt{-r 5} for \texttt{robot\_localization} , while for the AMCL we used \texttt{-r 2}; this flag increases the output rate of each topic by n times. Tests were performed with rates from 1 to 5 for multiple recordings, and the output showed that the results of \texttt{robot\_localization} were similar. While the result for the AMCL was similar only with a rate of 2.\\
 
 Now that we have set the testing environment, the process of setting the parameters for the \texttt{robot\_localization} package is as follows.
 
 
 \section{Parameters setting for the \texttt{robot\_localization}\label{test_and_evaluation}}
 
-For the analysis of the data from \texttt{robot\_localization} we wanted to visualize the results of the \texttt{robot\_localization} node without the influence of the AMCL node, so we set all the $\alpha$ parameters that define the behavior of the AMCL node to 0.0. This allowed us to visualize the position of the walls during the movements of the robot, allowing us to better understand its position and the type of error that the odometry exhibits.
+For the analysis of the data from \texttt{robot\_localization} we wanted to visualize the results of the \texttt{robot\_localization} node without the influence of the AMCL node, so we set all the $\alpha$ parameters that define the behavior of the AMCL node to 0.0. This allowed us to visualize in Rviz the position of the walls during the movements of the robot, allowing us to better understand its position and the type of error that the odometry exhibits.
 
 As described before, the \texttt{robot\_localization} package contains an implementation of the Extended Kalman Filter (EKF) that supports multiple sensors and allows us to select which data fields are fused with the current state estimation. It also provides its process noise covariance matrix $Q$ to tuning it obtaining better performances.\\
 To better understand the dynamics of our changes in the parameters, we describe in the following paragraph the theory behind it.\\
@@ -479,14 +489,14 @@ where:\\
 - $R$ is the measurement noise covariance.\\
 - $K$ is the Kalman gain.\\
 
-In short, the better the \textbf{omnidirectional motion model} of the  \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process noise covariance diagonal value for the variable in question. This will cause the filter’s predicted error to be larger, leading the filter to trust the incoming measurement more during correction.
+In short, for the process noise covariance matrix $Q$ the better the \textbf{omnidirectional motion model} of the  \texttt{robot\_localization} package matches the robot, the smaller these values can be. However, if we find that a given variable is slow to converge, one approach is to increase the process noise covariance diagonal value for the variable in question. This will cause the filter’s predicted error to be larger, leading the filter to trust the incoming measurement more during correction.
 
 In the next sections we describe our procedure to tune these parameters for the Mini and for the Jobot.
 
 \newpage
 \subsection{Setting up the EKF of the mini}
 
-The data available for the Mini are the mounted IMU and its estimated odometry.
+The data available for the Mini are given by the mounted IMU and its estimated odometry.
 
 Using this data, and without any tuning, we obtain:
 \begin{figure}[H]
@@ -495,7 +505,7 @@ Using this data, and without any tuning, we obtain:
 	\captionof{figure}{Mini odometry given by the robot (red) and odometry given by the \texttt{robot\_localization} package (green)}
 \end{figure}
 
-Next are listed some information about these data from the:\\
+The picture show how big the error in rotation is for the Mini. For compensate this error we see what data our sensor are able to provide:
 IMU (topic \texttt{/imu/data} with a output frequency of 100 Hz)
 \begin{itemize}
 	\item orientation : cannot be used for a random error from the sensor as visible in this picture.
@@ -513,7 +523,7 @@ odometry (topic \texttt{/odometry/wheels} with a output frequency of 15 Hz)
 	\item velocity : it’s also the input given to the robot, providing direct information about velocity, so we take $v_{x}$ and $v_{y}$ from the data. We tried to use $v_{yaw}$, but it introduced a lot of error in the estimation.
 \end{itemize}
 
-After choosing the input data to use, we tried changing the values of the process noise covariance $Q$, obtaining the best results for the different recordings. This test was performed using record 001, where the start position is inside the office and the end is outside the door of the office (a distance of about 4 m) with a total length of about 187 m:
+After choosing the input data to use, we tried changing the values of the process noise covariance $Q$, obtaining these results. This test was performed using record 001, where the start position is inside the office and the end is outside the door of the office (a distance of about 4 m) with a total length of about 187 m:
 
 \begin{table}[H]
 	\centering
@@ -569,7 +579,7 @@ All the test are displayed in the next graph:
 	\captionof{figure}{Results changing parameters of the process noise covariance using the record 001}
 \end{figure}
 
-We can see that the best results were achieved by incrementing the value of the process covariance matrix for  $v_{yaw}$, while changing the other inputs did not affect the results. More tests were performed with larger and smaller values of those variables, but they did not change the outcome. So, the best result is the following:
+We can see that the best results were achieved by incrementing the value of the process covariance matrix for  $v_{yaw}$, while changing the other inputs did not affect the results. More tests were performed with larger and smaller values of those variables, but they did not change the outcome. So, the best result was obtained whit a value for $v_{yaw}$ of 50.0 while for the other two keep at 0.1 and gives us this result:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\linewidth]{img/result_001_ekf.png}
@@ -577,7 +587,7 @@ We can see that the best results were achieved by incrementing the value of the 
 	\label{result ekf mini with walls}
 \end{figure}
 
-We can see in Figure \ref{result ekf mini with walls} that the position along the direction estimated by the odometry is incorrect, but changing the value in the process noise matrix did not improve the estimation. This is a correction that the AMCL node is intended to address.
+As shown in Figure \ref{result ekf mini with walls}, examining the correspondence between the walls of the map and the walls recorded during navigation indicates that the estimated position is incorrect. However, adjusting the values in the process noise matrix did not improve this estimation. This is a correction that the AMCL node is intended to address.
 \newpage
 \subsection{Setting up the EKF of the Jobot}
 A similar procedure to that used for the Mini was performed for the Jobot. We discovered that in both recordings, the robot, while moving through a fire door, makes a "jump" visible in the odometry. This may be caused by a small step needed to pass through the fire door.\\
@@ -587,26 +597,26 @@ The data of measure 000 was performed with only the $yaw$ of the odometry of the
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/with_yaw.png}
-	\captionof{figure}{Estimation obtained with the $yaw$ of the Jobot's odometry}
+	\captionof{figure}{Estimation obtained with the $yaw$ of the Jobot's odometry (green) with the estimation from the robot (red)}
 \end{figure}
 \newpage
-Having seen the results and that the changes to the process noise covariance did not affect the outcomes, it was decided to remove this data and evaluate the results using $v_{yaw}$ from only the IMU (data 001):\\
+Having seen the results and tested some changes to the process noise covariance did not affect the outcomes, it was decided to remove this data and evaluate the results using $v_{yaw}$ from only the IMU (data 001):\\
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{img/jobot_only_imu_Vyaw_bassa.png}
-	\captionof{figure}{Estimation obtained with only the $v_{yaw}$ of the Jobot's IMU}
+	\captionof{figure}{Estimation obtained with only the $v_{yaw}$ of the Jobot's IMU (green) with the estimation from the robot (red)}
 \end{figure}
 
-It overestimates the position, so we tried summing $v_{yaw}$ from both the IMU and the odometry provided by the Jobot (data 002):\\
+It overestimates the rotation, so we tried summing $v_{yaw}$ from both the IMU and the odometry provided by the Jobot (data 002):\\
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{img/with_both_Vyaw.png}
-	\captionof{figure}{Estimation obtained with both the $v_{yaw}$}
+	\captionof{figure}{Estimation obtained with both the $v_{yaw}$ (green) with the estimation from the robot (red)}
 \end{figure}
 
-Since this was the best outcome, we decided to change the process noise covariance.\\ All the results are:
+Since this was the best outcome, we decided to use them as input and change the values of $Q$ for the $v_{yaw}$ because the error in translation is very low.\\ All the results are:
 
 \begin{table}[H]
 	\centering
@@ -644,7 +654,7 @@ The best outcome is visible in the following figure:\\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{img/final_best.png}
-\captionof{figure}{Best result obtained for Jobot}
+\captionof{figure}{Best result obtained for Jobot (green) with the estimation from the robot (red)}
 \label{Ottimal result obtained visualized in Rviz}
 \end{figure}
 \newpage
@@ -676,7 +686,7 @@ In the following figure, the odometry estimation with the $\alpha$ parameters se
 	\captionof{figure}{Best result with the Mini using the \texttt{robot\_localization} for the record 007}
 \end{figure}
 
-Then, we tested changing only one parameter at a time, increasing its effect on the estimation while paying closer attention to the parameters that most effectively correct the estimation made in the \texttt{robot\_localization} node. This is necessary to compensate for errors during rotation and also errors in the traveled position. This can be compensated using the parameters:$\alpha 1$ and $\alpha 3$.\\
+Then, we tested changing only one parameter at a time, increasing its effect on the estimation while paying closer attention to the parameters that most effectively correct the estimation made in the \texttt{robot\_localization} node. This is necessary to compensate for errors during rotation and also errors in the traveled position. This can be compensated using the parameters: $\alpha 1$ and $\alpha 3$.\\
 The results are shown below, with the first row displaying the data from odometry provided by the localization node without correction from the AMCL node.
 
 \begin{table}[H]
@@ -713,7 +723,7 @@ The results are shown below, with the first row displaying the data from odometr
 	\caption{result planner first request}
 \end{table}
 
-Changing $\alpha 1$ and $\alpha 2$ fixes the rotation error, but we observe significant oscillation in the position correction if we increase them too much; this is evident in data 004. In the end, we decided to keep both parameters around 0.1. As a result, we obtained this picture of the odometry, which shows that the rotation was corrected. However, it also indicates that the positional movement has not been corrected, as expected, because the change in direction to the left occurs with respect to the map prior to the intersection of the hallways.
+Changing $\alpha 1$ and $\alpha 2$ fixes the rotation error, but we observe significant oscillation in the position correction if we increase them too much; this is evident in data 004. In the end, we decided to keep both parameters around 0.01. As a result, we obtained this picture of the odometry, which shows that the rotation was corrected.
 
 \begin{figure}[H]
 	\centering
@@ -721,28 +731,30 @@ Changing $\alpha 1$ and $\alpha 2$ fixes the rotation error, but we observe sign
 	\captionof{figure}{Result performed by AMCL without length correction}
 \end{figure}
 
-This allowed us to observe the corrections made for the heading. It is evident that the error increases as the robot moves, and we can see that we performed a good correction using the \texttt{robot\_localization} package.
+This allowed us to observe the corrections made for the heading. It is evident that the error increases as the robot moves and we can see that we performed a good correction in rotation using the \texttt{robot\_localization} package but not in translation.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini_rotation_correction.png}
 	\includegraphics[width=0.9\linewidth]{img/mini_angle_correction_amcl.png}
-	\captionof{figure}{Heading correction for the Mini with AMCL}
+	\captionof{figure}{On top heading values returned by the system; down  the heading correction for the Mini performed by AMCL}
 \end{figure}
 \newpage
-The table shows that without adding the correction for rotation, the translation error alone does not solve the problem. During testing (data 009), it was possible to see that the combination of these parameters allowed for a correction of the position on the left side of the path (the one with more map detail). This did not completely resolve the issues on the right side (with less detail), but it was able to make some corrections. The final solution (data 010) was the best, effectively addressing the position error during movement.
+The table shows that without adding the correction for rotation, the translation correction parameter alone does not solve the problem. During testing (data 009), it was possible to see that the combination of these parameters allowed for a correction of the position on the left side of the path (the one with more map detail). This did not completely resolve the issues on the right side (with less map detail), but it was able to make some corrections. The final solution (data 010) is considered the best, effectively addressing the position error during movement. The parameter was kept high to accommodate worse scenarios, such as longer hallways.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/mini_best_result_amcl.png}
 	\captionof{figure}{Best result obtained by AMCL on the Mini on record 007}
 \end{figure}
 
-And this is the data plotted:
+And this is the data plotted.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\linewidth]{img/final_result_and_correction_XY.png}
-	\captionof{figure}{best result mini data plotted}
+	\captionof{figure}{On the left the correction in position performed by AMCL; on the right the path corrected by AMCL}
 \end{figure}
+
+It is evident that to the left of the starting point, the translation error is fully compensated. In contrast, to the right, the performance is poorer due to a lack of features, as many doors are closed along that path.
 
 \subsection{Setting up the AMCL for the Jobot}
 
@@ -786,10 +798,10 @@ Because we didn't increase the correction for rotation during translation $\alph
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{img/amcl_jobot_best_plot.png}
-\captionof{figure}{Plots of the best result for the Jobot with record 001}
+\captionof{figure}{Plots of the best result for the Jobot with record 001; on the left the correction along $x$, $y$ and for the $heading$; on the right the path followed by the robot}
 \end{figure}
 
-This shows that the small step generated a very high error in all three dimensions: $x$, $y$ and $yaw$, but AMCL managed to correct it perfectly.
+At the vertical red line, it visible that the small step generated a very high error in all three dimensions: $x$, $y$ and $yaw$, but AMCL managed to correct it perfectly.
 
 It was also tested on record 002, which was created with the intention of generating errors in the estimation due to an environment lacking a sufficient number of features. In fact, it was decided to move the robot along the corridor and, before coming back, to close the doors of some offices. Since the odometry estimated by the robot is good and the corrections in the AMCL are minimal, this did not create a problem. Here is a picture of the result:
 
@@ -810,11 +822,11 @@ Now we tested the robots in simulation and discovered that for the Jobot, during
 	\label{sharp curves}
 \end{figure}
 
-This issue is caused by the local planner failing to generate an effective command to move the robot. It takes the global plan and the local costmap and produces command velocities to direct the robot toward the goal. One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA,  based on the sampling of possible velocities and selecting the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, which uses a sampling-based approach to select optimal trajectories, optimizing across successive iterations. This approach has shown better performance\cite{macenski2023survey}and works without any configuration. The other solution was to tune the DWB to avoid this behavior.
+This issue is caused by the local planner failing to generate an effective command to move the robot. It takes the global plan and the local costmap and produces command velocities to direct the robot toward the goal. One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA,  based on the sampling of possible velocities and selecting the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, which uses a sampling-based approach to select optimal trajectories, optimizing across successive iterations. This approach has shown better performance\cite{macenski2023survey} and works without any configuration. The other solution was to tune the DWB to avoid this behavior.
 
 \subsection{In reality}
 As described earlier, the Mini has a high error in position estimation due to the localization and the lack of sufficient feature description of the map using the scan. If we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
-One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
+One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera\cite{10056144}, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
 
 \begin{figure}[H]
 	\centering
@@ -823,6 +835,7 @@ One solution could be to rotate beforehand, allowing the AMCL to correct the err
 	\label{error local and global costamp}
 \end{figure}
 
+\alert{Also for control the robot is added to the systemd services for controlling the sequence of launch file to execute.}
 
 \newpage
 \section{Other problems discovered during testing}

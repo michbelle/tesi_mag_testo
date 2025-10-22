@@ -1,10 +1,12 @@
 \part{Conclusion and Future Work}
 Through this work, we conclude the advantages that ROS 2 brings to the industrial environment and the potential that OpenRMF offers. In this chapter, we describe all the advantages we discovered.
 \chapter{Conclusion}
+With this work we show the ability that ROS 2 can bring in the realization of industrial solution in robotics.\\
+From porting the code we discovered the Lifecycle and the Compose option for creating nodes.
 The new Lifecycle state machine available for the nodes allows for better management of interactions between nodes. It enables control in the event that a node crashes or fails to change state, affecting the behavior of other nodes. For example, if the node controlling a sensor fails to output or crashes, it can stop the Nav2 nodes and transition the robot to a safe state.
-
-Additionally, for building AMRs, the modularity and the vast array of solutions for each problem allow for easy changes in plugins and nodes, facilitating rapid deployment. The configurability of the nodes enables these performance enhancements with minimal code changes. The configurability of the new launch system for the nodes allows control over the sequence and prevents launching nodes if some fail to execute.
-
-The modularity of Nav2 enabled the quick import of the code from our planner, allowing us to assess its advantages and disadvantages. Finally, OpenRMF showcases the possibilities that can be implemented.
+The composite feature allow an optimization on the transmission of the data.
+Additionally, for building AMRs, the modularity and the vast number of solutions for each problem allow for easy changes in plugins and nodes, facilitating rapid deployment. The configurability of the nodes enables these performance enhancements with minimal code changes.
+The modularity of Nav2 enabled the quick import of the code from our planner, allowing us to assess its advantages and disadvantages.\\
+Finally, OpenRMF showcases its potential. With its tools allow for fast creation of complex navigation graph path, allow also for non brand depended robot infrastructure, allow to import easily different robot and that has a built in package for ROS robots, allow the control of structural elements like doors and with its dedicated task functionality allow for different and personal task control.
 \chapter{Future work}
 Using OpenRMF, we can create nodes that, thanks to a large language model, can send tasks to the robot. We aim to implement this feature for our warehouse, enabling us to control the robot effectively. Additionally, with the Fleet Adapter, which forms the basis of the Free Fleet package, we can manage other robots in our fleet. We have also identified ways to improve the planner.
