@@ -1,17 +1,15 @@
 \part{Introduction}
-\alert{This work present an analysis of the process to port a global planner from ROS 1 to ROS 2, building a Autonomous Mobile Robot (AMR) from an Unmanned Ground Vehicle (AGV), porting a old ROS 1 AMR to ROS 2 and integrating them in a new fleet manager, OPEN-RMF, which is still under active development but has reached a mature enough state to be deployed in mobile robots at Elettra Sincrotrone Trieste.}
-This work presents a study on the new system, OPEN-RMF, which is still under active development but has reached a mature enough state to be deployed in mobile robots at Elettra Sincrotrone Trieste.
+This thesis focuses on several key areas in robotics, particularly exploring the requirements for constructing an Autonomous Mobile Robot (AMR) from an Unmanned Ground Vehicle (UGV) using Nav2. Additionally, it examines the process of porting a global planner from ROS 1 to ROS 2. The work also includes the migration of an older ROS 1 AMR to ROS 2 and the integration of these systems into a new fleet management framework, OPEN-RMF. While OPEN-RMF is still under active development, it has reached a sufficiently mature state to effectively control mobile robots at Elettra Sincrotrone Trieste.
 \chapter{Background and motivation}
 Elettra Sincontrone Trieste\footnote{\href{https://www.elettra.eu/}{https://www.elettra.eu/}} is a major research facility that primarily provides users access to two light sources: the synchrotron Elettra and the free electron laser FERMI.
 In addition to operating these sources, the facility actively researches new technologies and techniques to enhance its capabilities and operations. Many recent advancements are based on robotics, which, especially after the COVID-19 pandemic and with the rapid rise of large language models (LLMs), have enabled new ways for users to interact with the infrastructure, including robot-assisted information retrieval and package delivery services.
-Previously, the facility developed a global planner, D-Star (D-star based optimized trajectory planner)\cite{10.1007/978-3-031-45770-8_29}, within the ROS 1 framework to enable robot navigation across large-scale environments.  However, as ROS 1 has reached end-of-life, the codebase must now be migrated to ROS 2.
-\alert{Also, the facility has multiple robots, some to be build, other that use ROS 1 and need to be ported also to ROS 2 and other }
-\remove{Additionally, the facility employs robots} from multiple vendors, each specialized in different tasks and not designed to coordinate with one another.
-An environment that has narrow passages and lifts can create significant coordination challenges during navigation.
+Previously, the facility developed a global planner, D-Star (D-star based optimized trajectory planner)\cite{10.1007/978-3-031-67295-8_33}, within the ROS 1 framework to enable robot navigation across large-scale environments.  However, as ROS 1 has reached end-of-life, the codebase must now be migrated to ROS 2.\\
+Additionally, the facility has multiple robots, some of which are yet to be built, while others currently operating on ROS 1 that need to be ported also to ROS 2.
+Furthermore, the facility utilizes robots from various vendors, each specialized for different tasks and not designed for seamless coordination with one another and all is in an environment that has narrow passages and lifts can create significant coordination challenges during navigation.
 To address this issue,  Open-RMF\footnote{\href{https://www.open-rmf.org/}{https://www.open-rmf.org/}} has been developed in recent years as a multiplatform system for controlling and managing heterogeneous fleets of robots.
 \chapter{Research questions and objectives}
-The objectives of this thesis are: \alert{to port the D-Star global planner from ROS 1 to ROS 2, to integrate a Rover Mini unmanned ground vehicle (UGV) from the company RoverRobotics} \footnote{\href{https://roverrobotics.com/}{https://roverrobotics.com/}}
-into the ROS 2 Nav2 ecosystem \alert{making it a Autonomous Mobile Robot (AMR)},\\
+The objectives of this thesis are: to port the D-Star global planner from ROS 1 to ROS 2, to integrate a Rover Mini unmanned ground vehicle (UGV) from the company RoverRobotics \footnote{\href{https://roverrobotics.com/}{https://roverrobotics.com/}}
+into the ROS 2 Nav2 ecosystem making it a Autonomous Mobile Robot (AMR),\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.4\linewidth]{img/RoverRoboticsMini.png}
@@ -19,7 +17,7 @@ into the ROS 2 Nav2 ecosystem \alert{making it a Autonomous Mobile Robot (AMR)},
 	\label{fig:RoverRobotics Rover Mini}
 \end{figure}\\
 to port the D-Star global planner from ROS 1 to ROS 2,
-upgrade our Jobot \replace{rover}{AMR} from ROS 1 to ROS 2,\\
+upgrade our Jobot AMR from ROS 1 to ROS 2,\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.3\linewidth]{img/jobot_robot.jpg}
@@ -28,4 +26,4 @@ upgrade our Jobot \replace{rover}{AMR} from ROS 1 to ROS 2,\\
 \end{figure}\\
 incorporate the robot into the Open-RMF framework for centralized fleet management and evaluate the suitability of the Open-RMF ecosystem for deployment at the Elettra Sincrotrone Trieste.
 \chapter{Scope and limitations}
-The principal limitation is the current lack of access to lift control systems, which prevents direct integration and operation by \replace{the robot fleet}{Open-RMF}. Additionally, there is no automated system for opening and closing doors\alert{, another feature that can be managed by Open-RMF}. While Open-RMF offers a high degree of customizability, and human-in-the-loop interactions can be configured—such as triggering a light or sending a notification when a robot approaches a door—this method requires a human to manually open the door or operate the lift. However, such an approach is not ideal for achieving full autonomy.
+The principal limitation is the current lack of access to lift control systems, which prevents direct integration and operation by Open-RMF. Additionally, there is no automated system for opening and closing doors, another feature that can be managed by Open-RMF. While Open-RMF offers a high degree of customizability, and human-in-the-loop interactions can be configured—such as triggering a light or sending a notification when a robot approaches a door—this method requires a human to manually open the door or operate the lift. However, such an approach is not ideal for achieving full autonomy.

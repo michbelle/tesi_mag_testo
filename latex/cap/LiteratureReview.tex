@@ -5,7 +5,7 @@ The Robotics Operating System (ROS)\footnote{\href{https://www.ros.org/}{https:/
 The ROS ecosystem is built upon the following core components:
 \begin{itemize}
 	\item \textbf{Middleware communication layer (RMW)}: Built on the Data Distribution Service (DDS) standard, this layer enables nodes to exchange information using an anonymous publish/subscribe pattern. This design promotes fault isolation, separation of concerns and modular interfaces. ROS also supports synchronous, Remote Procedure Call (RPC)-style communication between services.\\While the default DDS implementation is eProsima Fast DDS  (\texttt{rmw\_fastrtps\_cpp}), this work uses Eclipse Cyclone DDS (\texttt{rmw\_cyclonedds\_cpp}) due to its better compatibility with the Nav2 navigation stack in ROS Humble.
-	\item \alert{\textbf{Multiple Client Libraries}: Allow to program in ROS using multiple languages and access to the core communication APIs}.
+	\item \textbf{Multiple Client Libraries}: Allow to program in ROS using multiple languages and access to the core communication APIs.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.4\linewidth]{img/ros2_structure.png}
@@ -17,7 +17,7 @@ The ROS ecosystem is built upon the following core components:
 \end{itemize}
 \newpage
 \section{Structure of ROS}
-The official ROS documentation\footnote{\href{https://docs.ros.org/en/rolling/index.html}{https://docs.ros.org/en/rolling/index.html}} provides comprehensive information about the system.  All communication in ROS is handled through the \textbf{ROS Graph} , a peer-to-peer network of processes (called nodes) that execute concurrently and exchange information with one another. Some components of this graph are described below. Note that some of the functionalities described are specific to ROS 2 and are not available in ROS 1:
+The official ROS documentation\footnote{\href{https://docs.ros.org/en/rolling/index.html}{https://docs.ros.org/en/rolling/index.html}} provides comprehensive information about the system.  All communication in ROS is handled through the \textbf{ROS Graph} , a peer-to-peer network of processes (called nodes) that execute concurrently and exchange information with one another. Some components of this graph are described below. Note that some of the functionalities described are specific to ROS 2 and are not available in ROS 1.
 \begin{itemize}
 	\item \textbf{Nodes}: A node is a modular process that should performs a specific task. Nodes communicate with each other through topics, services, actions and parameters. In ROS 2, nodes can be implemented as \textbf{LifecycleNode}\label{LifecycleNode}, which provide a managed state machine with defined transitions for startup and shutdown, enabling more deterministic behavior.
 	\begin{figure}[H]
@@ -25,7 +25,7 @@ The official ROS documentation\footnote{\href{https://docs.ros.org/en/rolling/in
 	\includegraphics[width=1\linewidth]{img/life_cycle_sm_nf.png}
 	\captionof{figure}{State Machine of LifecycleNode}
 	\end{figure}
-	\alert{Nodes can also be instantiate into process using the \textbf{Composition}\label{Composition} feature, which also allow bypassing middleware overhead through intra-process communication, reducing RAM and CPU usage while improving goodput and latency}\cite{macenski2023impactros2node}.
+	Nodes can also be instantiate into process using the \textbf{Composition}\label{Composition} feature, which also allow bypassing middleware overhead through intra-process communication, reducing RAM and CPU usage while improving goodput and latency\cite{macenski2023impactros2node}.
 	\item \textbf{Topics}: Topics are used for communication between nodes to share streams of messages in a publisher-subscriber structure.
 	\begin{center}
 		\captionsetup{type=figure}
@@ -51,8 +51,8 @@ This section describes the tools available in ROS for developing robotic systems
 \begin{itemize}
 	\item \textbf{Launch}: A file structure that allows the simultaneous start of multiple nodes with a set of parameters.
 	\item \textbf{rqt}: A graphical user interface (GUI) tool for ROS. It includes a series of plugins that facilitate development, monitoring, and diagnostics of the ROS system.
-	\item \textbf{Rviz}: A 3D visualization tool for the Robot Operating System. It allows visualization of sensor data and state information from ROS.\\\\
-	\begin{figure}[h]
+	\item \textbf{Rviz}: A 3D visualization tool for the Robot Operating System. It allows visualization of sensor data and state information from ROS.
+	\begin{figure}[H]
 		\centering
 		\begin{subfigure}{0.4\textwidth}
 		\centering
@@ -63,7 +63,7 @@ This section describes the tools available in ROS for developing robotic systems
 		\includegraphics[width=1\linewidth]{img/rviz2.png}
 		\end{subfigure}
 		\captionof{figure}{Examples of visualization of ROS data with Rviz}
-	\end{figure}\\
+	\end{figure}
 	\item \textbf{rosdep}: A command-line utility for installing system dependencies required by ROS packages.
 	\item \textbf{sros2}: A security extension for ROS 2 that provides tools and instructions to apply security policies to DDS (Data Distribution Service)\cite{vilches2022sros2usablecybersecurity}.
 \end{itemize}
@@ -76,7 +76,7 @@ Gazebo offer:
 	\item \textbf{Realistic simulation}: Support for a variety of sensors, including their noise models, within a 3D world rendered using OGRE 2.1\footnote{\href{https://wiki.ogre3d.org/Home}{https://wiki.ogre3d.org/Home}} and powered by multiple physics engine, the default one is DART\footnote{\href{https://dartsim.github.io/}{https://dartsim.github.io/}}.
 	\item \textbf{Extensibility}: A modular design that supports plugins, allowing developers to run custom code that interacts directly with the simulation environment.	
 \end{itemize}
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\begin{subfigure}{0.4\textwidth}
 			\centering
@@ -94,7 +94,7 @@ Multiple tools are available to enable a robot to move autonomously within an en
 \cite{macenski2020marathon2}, the successor to the ROS 1 Navigation Stack.
 \section{Description of Nav2}
 Nav2 provides a comprehensive set of tools for perception, planning, control, localization, and visualization, allowing any robot to navigate autonomously and reliably, even in complex environments\cite{macenski2023survey}. It enables the construction of an environmental model from sensor data, dynamically calculating the optimal path to avoid obstacles, setting motor velocities and executing navigation tasks using Behavior Trees.
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{img/nav2_architecture.png}
 \captionof{figure}{Nav2 architecture} \label{Nav2Arch}
@@ -103,15 +103,16 @@ Nav2 provides a comprehensive set of tools for perception, planning, control, lo
 Nav2 introduces several improvements over ROS 1, including:
 \begin{itemize}
 	\item \textbf{Behavior trees}\cite{Colledanchise_2018}: Nav2 uses Behavior Trees to structure and execute tasks in a human-readable and modular way. These trees enable the creation of complex systems and can be tested with various tools. The  BehaviorTree.CPP\footnote{\href{https://www.behaviortree.dev/}{https://www.behaviortree.dev/}} library is used to implement them, and it allows linking different trees for flexible behavior management.
-	\item \textbf{nav2\_util LifecycleNode}: This is a wrapper around the standard\\ \texttt{rclcpp\_lifecycle::LifecycleNode} described earlier \ref{LifecycleNode}. It adds a bond connection to the Lifecycle Manager \alert{node}, which monitors the state of each node and can safely transition nodes through their lifecycle states in the event of a failure.
+	\item \textbf{nav2\_util LifecycleNode}: This is a wrapper around the standard\\ \texttt{rclcpp\_lifecycle::LifecycleNode} described earlier \ref{LifecycleNode}. It adds a bond connection to the Lifecycle Manager node, which monitors the state of each node and can safely transition nodes through their lifecycle states in the event of a failure.
 	\item \textbf{Action Server}: Described in \ref{Action}, Nav2 uses action servers for Behavior Tree interactions, such as NavigationToPose (navigate to a specific location) and NavigationThroughPoses (navigate through multiple waypoints).
 \end{itemize}
 Nav2 is composed of several key nodes that work together to control the robot:
 \begin{itemize}
 	\item \textbf{Controller Server}: Handles movement requests. It uses plugin-based modules such as a progress checker (to verify if the robot is making progress), goal checker (to determine if the robot has reached its destination) and a controller (to generate velocity commands using the \textbf{local costmap} while avoiding collisions).
 	\item \textbf{Planner Server}: Computes the global path to the destination using sensor data and a  plugin-based global planner loaded with the \textbf{global costmap}.
+	\newpage
 	\item \textbf{BT Navigator Server}: Implements the NavigateToPose, NavigateThroughPoses, and other task interfaces. It is a Behavior Tree-based implementation of navigation that is intended to allow for flexibility in the navigation task and provide a way to easily specify complex robot behaviors.
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1.0\linewidth]{img/bt_nav2_neg.humble.png}
 		\captionof{figure}{Humble Nav2 BT navigation \texttt{navigate\_to\_pose\_w\_replanning\_and\_recovery.xml} loaded with Groot2}
@@ -135,9 +136,10 @@ And require the following information for navigation:
 	The \texttt{map} $\rightarrow$ \texttt{odom} link can be generate with a global positioning system like Simultaneous Localization And Mapping (SLAM) method\cite{sh-p1-prelude} or using the one provided by Nav2, Adaptive Monte-Carlo Localization (AMCL). \label{ref_map_to_odom}
 	\item \textbf{map} can either be preloaded or built dynamically using a SLAM method. One SLAM method systems is Google Cartographer, which will be described in the next section. It is also the SLAM method that was used to generate the map we use for navigation.
 \end{itemize}
+\newpage
 \subsection{Cartographer}
 Cartographer\cite{45466} is a SLAM method that operates using two main subsystems: a \textbf{Local SLAM} (called \textbf{Frontend}) that build a series of locally consistent \textbf{submaps} from successive scans and from the pose extrapolator with the possibility that it can drift during acquisition and a \textbf{Global SLAM} (called \textbf{Backend}) that reduces drift by performing loop closure—detecting when the robot has returned to a previously visited location. It uses scan matching against submaps and applies global optimization to align all submaps consistently and build a globally accurate map. Cartographer is capable of achieving mapping accuracy of 5 cm, but it requires extensive parameter tuning to reach optimal performance. 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{img/Alg\_Cartographer.png}
 	\captionof{figure}{Cartographer Algorithm}
@@ -164,20 +166,19 @@ Given that Open-RMF offers control over multiple fleets, enables structured inte
 \section{Open-RMF description}
 Open-RMF is a flexible and modular toolkit built on ROS 2 that facilitates interaction between heterogeneous robot fleets. It employs standardized protocols to enable communication with infrastructure, environments and automation systems, optimizing the utilization of critical shared resources such as elevators, doors, narrow corridors, and other robots. By coordinating access to these resources, Open-RMF introduces system-level intelligence that helps prevent conflicts and ensures proper task and resource allocation.
 Figure \ref{fig:Open-RMF Structure} illustrates the architecture and operational workflow of Open-RMF.
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{img/RMF\_struct.png}
 	\captionof{figure}{Open-RMF Structure}
 	\label{fig:Open-RMF Structure}
 \end{figure}
-\\
 The fleets that can be controlled through Open-RMF can be categorized into three types:
 \begin{itemize}
 	\item \textit{Full Control}: Fleets of this type provide full status updates and allow complete control over path planning and execution.
 	\item \textit{Traffic Light}: These fleets also provide full status updates, but only allow limited control, such as pausing and resuming operations. Open-RMF has control over certain behaviors, but not over the specific paths.
 	\item \textit{Read Only}: These fleets only provide status updates and cannot be controlled. Only one read-only fleet can exist in the system at any given time, as the presence of multiple read-only fleets would make it nearly impossible to avoid deadlocks or resource conflicts.
 \end{itemize}
-\alert{If a fleet does not belong to one of these categories, it falls under the classification of \textit{No Interface} and is incompatible with Open-RMF, as this could lead to deadlocks in resource allocation.}
+If a fleet does not belong to one of these categories, it falls under the classification of \textit{No Interface} and is incompatible with Open-RMF, as this could lead to deadlocks in resource allocation.
 \\
 The core of Open-RMF, known as \texttt{rmf\_core}, is composed of several modular packages, each serving a distinct role within the system:
 \begin{itemize}
@@ -193,7 +194,7 @@ The core of Open-RMF, known as \texttt{rmf\_core}, is composed of several modula
 			\item \textit{Negotiation}: When a potential conflict is detected between two or more schedule participants, a conflict notice is issued to the relevant fleet managers. Each manager responds with a preferred path that accommodates other agents, and an external arbitration module selects the optimal path.
 		\end{itemize}
 	Conflict avoidance for Automated Guided Vehicles (AGVs) is implemented using a time-dependent extension to A* search. This algorithm considers both spatial and temporal dimensions, allowing it to generate conflict-free paths by accounting for the future movements of other agents. Support for Autonomous Mobile Robots (AMRs) is under active development.
-	\item \remove{\texttt{rmf\_traffic\_ros2}: Provides the necessary ROS 2 interfaces for integrating rmf\_traffic into ROS 2-based systems.}
+	
 	\item \texttt{rmf\_task}: Contains APIs and base classes for defining and managing tasks in RMF.
 	The framework natively supports three types of task requests:
 	\begin{itemize}
@@ -202,14 +203,15 @@ The core of Open-RMF, known as \texttt{rmf\_core}, is composed of several modula
 		\item \textit{Loop}: For robots required to repeatedly navigate between two or more points.
 	\end{itemize}
 	\item \texttt{rmf\_dispatcher\_node}: Contains the logic responsible for task allocation and management across multi-fleet systems. When a user submits a new task request, the dispatcher intelligently assigns it to the most suitable robot by querying each fleet adapter capable of performing the task. These adapters respond with bids indicating which robot is best suited, and RMF uses this bidding mechanism to determine the optimal assignment, as illustrated in Figure \ref{fig:Open-RMF Bid Task}.
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1.0\linewidth]{img/RMF_tut_BidTask.png}
 		\captionof{figure}{Open-RMF Bid Task}
 		\label{fig:Open-RMF Bid Task}
 	\end{figure}
 	\item \texttt{rmf\_battery}: Provides battery consumption estimation models for different robot activities, aiding in energy-aware task planning.
-	\item \alert{\texttt{rmf\_obstacle}: Multiple packages that allow an interaction between the presence of obstacles or humans via sensors and the lanes of the fleet navigation graph. }
+	\item \texttt{rmf\_obstacle}: Multiple packages that allow an interaction between the presence of obstacles or humans via sensors and the lanes of the fleet navigation graph.
+	\newpage
 	\item \texttt{rmf\_ros2}: Supplies ROS 2 adapters, nodes, and Python bindings to integrate \texttt{rmf\_core} components into ROS 2 distribute system, as show in the following picture.
 	
 	\begin{figure}[H]
@@ -225,6 +227,7 @@ The core of Open-RMF, known as \texttt{rmf\_core}, is composed of several modula
 The following tools are available to support development with Open-RMF:
 \begin{itemize}
 	\item \texttt{rmf\_demos}: A collection of demonstration packages showcasing the capabilities of Open-RMF. These serve as a useful starting point for development and experimentation.
+	\newpage
 	\item \texttt{rmf\_traffic\_editor}: A graphical map editor used to define traffic patterns and interaction points (e.g., doors, lifts) that RMF uses for traffic management. It also supports the generation of Gazebo simulation worlds based on the designed maps.
 	\begin{figure}[H]
 		\centering
@@ -238,6 +241,7 @@ The following tools are available to support development with Open-RMF:
 		\includegraphics[width=0.8\linewidth]{img/office_site_editor.png}
 		\captionof{figure}{RMF Site Editor}
 	\end{figure}
+	\newpage
 	\item \texttt{fleet\_adapter\_template}: An open-source fleet adapter template that enables the integration of standalone mobile robots into Open-RMF, allowing the creation of heterogeneous fleets.
 	\begin{figure}[H]
 		\centering
@@ -245,23 +249,23 @@ The following tools are available to support development with Open-RMF:
 		\captionof{figure}{Fleet Adapter}
 		\label{fig:Fleet Adapter}
 	\end{figure}
-	\alert{From this package was developed \texttt{free\_fleet} for controlling robots developed in ROS 1 and ROS 2.}
+	From this package was developed \texttt{free\_fleet} for controlling robots developed in ROS 1 and ROS 2.
 	\item \texttt{rmf\_visualization}: An RViz plugin that provides visualization and monitoring of the RMF schedule, enabling users to observe and interact with traffic and task execution in real time.
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\linewidth]{img/rmf_visualization_img.png}
 		\captionof{figure}{Visualization of RMF via RViz given by \texttt{rmf\_visualization}}
 	\end{figure}
-	\newpage 
+	\newpage
 	\item \texttt{rmf-web} : A web-based application for visualization and control of the Robotic Middleware Framework (\texttt{rmf\_core}). It provides a user-friendly interface for monitoring system state and interacting with fleet operations.
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\linewidth]{img/RMF_tut_web.png}
 		\captionof{figure}{RMF Web}
 		\label{fig:RMF Web}
 	\end{figure}
 	\item \texttt{rmf\_simulation}: A set of Gazebo plugins designed to simulate various aspects of building infrastructure—such as doors, lifts, and crowds—as well as robot behavior, including navigation and interactions with workcells.
-	\item \alert{\texttt{door\_adapter\_template} and \texttt{lift\_adapter\_template}: Templates for writing a python based Open-RMF door and lift adapter.}
+	\item \texttt{door\_adapter\_template} and \texttt{lift\_adapter\_template}: Templates for writing a python based Open-RMF door and lift adapter.
 	\item \textbf{Simulation assets}: Freely available 3D models and environment assets used to support simulation development and testing in Gazebo.
 \end{itemize}
 
