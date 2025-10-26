@@ -860,7 +860,18 @@ The solution that best applies to us and is adopted in the Free Fleet package is
 
 \item The D-star algorithm does not perform effectively within the ROS 2 planner ecosystem because the map update procedure does not allow the planner to detect obstacles, this implementation has been included in the roadmap.
 
-\item An increment in the security is the setting up collision monitor for improve safety reason. This node use the information of some sensor and reduce the velocity sended to the robot in funcion of near obstacle.
+\item An increment in the security is the setting up collision monitor for improve safety reason. This node use the information of some sensor and reduce the velocity sended to the robot in function of near obstacle.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/collision_monitor_graph.png}
+	\captionof{figure}{Collision monitor diagram} 
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/polygon_check.png}
+	\captionof{figure}{polygon display}
+\end{figure}
 \newpage
 \item Additionally, we discovered misalignment between the planimetry image and the Cartographer map, as shown in the image below. It appears that at each major rotation, the system overestimates the robot’s rotation angle during mapping.
 
