@@ -393,7 +393,7 @@ This launch file takes as parameters the fleet configuration file and the route 
 
 \newpage
 \subsection{Web interfaces}
-Open-RMF also offers a web-based interface, \texttt{rmf-web}\footnote{\href{https://github.com/open-rmf/rmf-web}{https://github.com/open-rmf/rmf-web}}, to visualize and control the system on a browser. It consists of two main components:
+Open-RMF also offers a web-based interface for local testing, \texttt{rmf-web}\footnote{\href{https://github.com/open-rmf/rmf-web}{https://github.com/open-rmf/rmf-web}}, to visualize and control the system on a browser. It consists of two main components:
 \begin{itemize}
 	\item api server : Based on the OpenAPI specification and implemented with the Python FastAPI library, it provides REST API methods to communicate with Open-RMF.
 	\item dashboard :  In our case, a demo dashboard that connects to the API server and allows control of the fleet.
@@ -408,6 +408,16 @@ Then we can connect to the web dashboard:
 	\includegraphics[width=1\linewidth]{img/openRMF-dashboard.png}
 	\captionof{figure}{Open-RMF Web Dashboard}
 \end{figure}
+
+
+\subsection{Deployment template}
+The project Open-RMF also offer a deployment template\footnote{\href{https://github.com/open-rmf/rmf\_deployment\_template}{https://github.com/open-rmf/rmf\_deployment\_template}} for managing all the systems and all the tools to use the system on the web.
+It's based on kubernetes\footnote{\href{https://kubernetes.io/}{https://kubernetes.io/}}, an open source system for automating deployment, scaling, and management of containerized applications, and the git repository contains the demo for simulation that is displayed in the interface.\\
+It's built on keycloak\footnote{\href{https://www.keycloak.org/}{https://www.keycloak.org/}}, to add authentication to the services, and nginx\footnote{\href{https://nginx.org/}{https://nginx.org/}}, to manage the reverse proxy.
+We then modify the configuration files to adjust to our needs obtaining a web interface that can be controlled in 
+
+
+
 
 \chapter{Testing and evaluation of the system}
 
@@ -787,8 +797,8 @@ As mentioned before, in both records, when the robot passed the fire door, it "j
 
 In the first row, the output of the estimation in odometry without correction is reported. With data 000 and 001, we observe that the robot did not recover from the jump, resulting in an increasing error.
 
-\begin{figure}[H]
-	\centering
+\begin{figure}[htbp]
+	\hspace*{-2cm}
 	\includegraphics[width=0.9\linewidth]{img/amcl_jobot_001.png}
 	\captionof{figure}{Figure of data 001 obtained by Jobot}
 \end{figure}
@@ -797,8 +807,7 @@ Because we didn't increase the correction for rotation during translation $\alph
 \newpage
 The plot of the data for the best results is as follows:
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\linewidth]{img/amcl_jobot_best_plot.png}
+	\includegraphics[width=1.1\linewidth]{img/amcl_jobot_best_plot.png}
 	\captionof{figure}{Plots of the best result for the Jobot with record 001; on the left the correction along $x$, $y$ and for the $heading$; on the right the path followed by the robot}
 \end{figure}
 At the vertical red line, it visible that the small step generated a very high error in all three states: $x$, $y$ and $yaw$, but AMCL managed to correct it perfectly.
@@ -808,31 +817,40 @@ It was also tested on record 002, which was created with the intention of genera
 	\includegraphics[width=1.0\linewidth]{img/record2.png}
 	\captionof{figure}{Result of the Jobot with record 002}
 \end{figure}
+\section{Navigation startup procedure}
+Similar to the structure used in this paper\cite{10.1007/978-3-031-45770-8_29}, we create the service to start the communication with the sensor and, only after that they were launched successfully, we launch the navigation stuck ro control the UGVs.
+Since the system are based on Ubuntu the service use \texttt{systemd}\footnote{\href{https://systemd.io/}{https://systemd.io/}} provides a system and service manager with a logging daemon.
 \section{Navigation problems}
 \subsection{In simulation}
-Now we tested the AMRs in simulation and discovered that for the Jobot, during sharp curves, as shown in figure \ref{sharp curves} below, the AMR stopped right before the turn, rotated in place, and then proceeded to hit the wall, eventually stopping.
-
+Now we tested the AMRs in simulation and discovered that for the Jobot, during sharp curves, as shown in figure \ref{sharp curves} below, the AMR stopped right before the turn, rotated in place, and then proceeded to hit the wall, eventually stopping.\\
+This issue is caused by the local planner failing to generate an effective command to move the AMR. It takes the global plan and the local costmap and produces command velocities to direct the AMR toward the goal. One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA,  based on the sampling of possible velocities and selecting the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, which uses a sampling-based approach to select optimal trajectories, optimizing across successive iterations. This approach has shown better performance\cite{macenski2023survey} and worked without any configuration.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{img/problem_local_planner_jobot.png}
-	\captionof{figure}{problem\_local\_planner\_jobot}
+	\captionof{figure}{Problem with Local Planner for the Jobot}
 	\label{sharp curves}
 \end{figure}
 
-This issue is caused by the local planner failing to generate an effective command to move the AMR. It takes the global plan and the local costmap and produces command velocities to direct the AMR toward the goal. One solution was to change the local planner from the default Dynamic Window Approach DWB successor of the DWA,  based on the sampling of possible velocities and selecting the one with the best score, to the Model Predictive Path Integral Controller MPPI\cite{7487277}, which uses a sampling-based approach to select optimal trajectories, optimizing across successive iterations. This approach has shown better performance\cite{macenski2023survey} and works without any configuration. The other solution was to tune the DWB to avoid this behavior.
-
 \subsection{In reality}
-As described earlier, the Mini has a high error in position estimation due to the localization and the lack of sufficient feature description of the map using the scan. If we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
+
+After the calibration of the parameters using the records, we tested how them perform in reality.
+
+\subsubsection{Mini test results}
+The results for the Mini improved a lot, while the doors are open the system manages to correct his position and move through the building without issue. But after the end of working time or if multiple person close their office doors, the robot could fails to correct his position. This happened some times when moving through a 22 m long hallway with door closed and the system at the end didn't managed to correct an error of about 1 m. After returned to the start position and the robot was reporting that was at the right position, can be deduced that the correction from AMCL was not applied. While in other situation he managed to recover his position thanks the actions (spin and backup) of the behavior tree of Nav2 that AMCL used to correct the position of the robot respect the map.\\
+But when we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
 One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera\cite{10056144}, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\linewidth]{img/possible error caused by not good estimation.png}
-	\captionof{figure}{Error when also AMCL fail}
+	\captionof{figure}{Error when the estimation from AMCL fails}
 	\label{error local and global costamp}
 \end{figure}
 
-Additionally, to start all nodes in the AMRs, systemd services are added.
+\subsubsection{Jobot test results}
+
+Since the odometry where better, this problem was not so much visible.
+
 
 \newpage
 \section{Other problems discovered during testing}
@@ -861,17 +879,17 @@ The solution that best applies to us and is adopted in the Free Fleet package is
 
 \item The D-star algorithm does not perform effectively within the ROS 2 planner ecosystem because the map update procedure does not allow the planner to detect obstacles, this implementation has been included in the roadmap.
 
-\item An increment in the security is the setting up collision monitor for improve safety reason. This node use the information of some sensor and reduce the velocity sended to the robot in function of near obstacle.
-
+\item To improve the safety the Collision Monitor\footnote{\href{https://github.com/ros-navigation/navigation2/tree/main/nav2\_collision\_monitor}{https://github.com/ros-navigation/navigation2/tree/main/nav2\_collision\_monitor}} was inserted. This node\ref{fig:CollisionMonitor} uses the information from the sensor used to detect obstacles to reduce the velocity sended to the robot.
+If an object is inside the slowdown box it reduce its velocity, it send no velocity if an object is inside the stop box or it reduce the velocity if it estimate that a collision using the approach box is possible in the future\ref{fig:collision_poligons}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/collision_monitor_graph.png}
-	\captionof{figure}{Collision monitor diagram} 
+	\captionof{figure}{Collision monitor diagram} \label{fig:CollisionMonitor}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/polygon_check.png}
-	\captionof{figure}{polygon display}
+	\captionof{figure}{Collision monitor control boxes}\label{fig:collision_poligons}
 \end{figure}
 \newpage
 \item Additionally, we discovered misalignment between the planimetry image and the Cartographer map, as shown in the image below. It appears that at each major rotation, the system overestimates the robot’s rotation angle during mapping.
