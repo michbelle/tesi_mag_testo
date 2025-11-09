@@ -522,9 +522,9 @@ To compensate for this error,  we analyze what data our sensor are able to provi
 IMU (topic \texttt{/imu/data} with a output frequency of 100 Hz)
 \begin{itemize}
 	\item orientation : cannot be used for a random error from the sensor as visible in this picture.
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=1\linewidth]{img/comparazione_heading_with_yawVel.png}
+	\begin{figure}[H]%htbp
+		\hspace*{-1cm}
+		\includegraphics[width=1.1\linewidth]{img/comparazione_heading_with_yawVel.png}
 		\captionof{figure}{Heading data from the \texttt{robot\_localization} (light blue), IMU orientation (green) and odometry from the robot (blue) versus the $v_{yaw}$ measured by the gyroscope of the IMU}
 	\end{figure}
 	\item gyroscopic : we use his data about $v_{yaw}$
@@ -594,9 +594,9 @@ All the test are displayed in the next graph:
 \end{figure}
 
 We can see that the best results were achieved by incrementing the value of the process covariance matrix for  $v_{yaw}$, while changing the other inputs did not affect the results. More tests were performed with larger and smaller values of those variables, but they did not change the outcome. So, the best result was obtained whit a value for $v_{yaw}$ of 50.0 while for the other two keep at 0.1 and gives us this result:
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\linewidth]{img/result_001_ekf.png}
+\begin{figure}[H]%htbp
+	\hspace*{-1cm}
+	\includegraphics[width=1.1\linewidth]{img/result_001_ekf.png}
 	\captionof{figure}{Best result for the Mini with the information of walls position}
 	\label{result ekf mini with walls}
 \end{figure}
@@ -670,9 +670,9 @@ The best outcome is visible in the following figure:\\
 \newpage
 The plotted data are:
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\linewidth]{img/jobot_ekf_full.png}
+\begin{figure}[H]%htbp
+	\hspace*{-1cm}
+	\includegraphics[width=1.1\linewidth]{img/jobot_ekf_full.png}
 	\captionof{figure}{Results from the tuning of the process noise covariance for the Jobot plotted}
 \end{figure}
 
@@ -743,10 +743,11 @@ Changing $\alpha 1$ and $\alpha 2$ fixes the rotation error, but we observe sign
 
 This allowed us to observe the corrections made for the heading. It is evident that the error increases as the robot moves and we can see that we performed a good correction in rotation using the \texttt{robot\_localization} package but not in translation.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/mini_rotation_correction.png}
-	\includegraphics[width=0.9\linewidth]{img/mini_angle_correction_amcl.png}
+\begin{figure}[H]%htbp
+	\hspace*{-1cm}
+	\includegraphics[width=1.1\linewidth]{img/mini_rotation_correction.png}
+	\hspace*{-0.8cm}
+	\includegraphics[width=1.1\linewidth]{img/mini_angle_correction_amcl.png}
 	\captionof{figure}{On top heading values returned by the system; down  the heading correction for the Mini performed by AMCL}
 \end{figure}
 \newpage
@@ -758,9 +759,9 @@ The table shows that without adding the correction for rotation, the translation
 \end{figure}
 
 And this is the data plotted.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\linewidth]{img/final_result_and_correction_XY.png}
+\begin{figure}[H]%htbp
+	\hspace*{-1cm}
+	\includegraphics[width=1.1\linewidth]{img/final_result_and_correction_XY.png}
 	\captionof{figure}{On the left the correction in position performed by AMCL; on the right the path corrected by AMCL}
 \end{figure}
 
@@ -797,8 +798,8 @@ As mentioned before, in both records, when the robot passed the fire door, it "j
 
 In the first row, the output of the estimation in odometry without correction is reported. With data 000 and 001, we observe that the robot did not recover from the jump, resulting in an increasing error.
 
-\begin{figure}[htbp]
-	\hspace*{-2cm}
+\begin{figure}[H]
+	\centering
 	\includegraphics[width=0.9\linewidth]{img/amcl_jobot_001.png}
 	\captionof{figure}{Figure of data 001 obtained by Jobot}
 \end{figure}
@@ -806,9 +807,10 @@ In the first row, the output of the estimation in odometry without correction is
 Because we didn't increase the correction for rotation during translation $\alpha 2$, and since we moved straight after the jump, AMCL did not fix the rotation error. So, we increased it, achieving good results. To obtain even better outcomes, we added a bit more correction with  $\alpha 3$ and $\alpha 4$. Considering that our test path was short and there could be additional errors in translation, we also observed an increase in estimation performance.
 \newpage
 The plot of the data for the best results is as follows:
-\begin{figure}[H]
+\begin{figure}[H]%htbp
+	\hspace*{-1cm}
 	\includegraphics[width=1.1\linewidth]{img/amcl_jobot_best_plot.png}
-	\captionof{figure}{Plots of the best result for the Jobot with record 001; on the left the correction along $x$, $y$ and for the $heading$; on the right the path followed by the robot}
+	\captionof{figure}{Plots of the best result for the Jobot with record 001; on the left  correction along $x$, $y$ and for the $heading$; on the right the path followed by the robot}
 \end{figure}
 At the vertical red line, it visible that the small step generated a very high error in all three states: $x$, $y$ and $yaw$, but AMCL managed to correct it perfectly.
 It was also tested on record 002, which was created with the intention of generating errors in the estimation due to an environment lacking a sufficient number of features. In fact, it was decided to move the robot along the corridor and, before coming back, to close the doors of some offices. Since the odometry estimated by the robot is good and the corrections in the AMCL are minimal, this did not create a problem. Here is a picture of the result:
