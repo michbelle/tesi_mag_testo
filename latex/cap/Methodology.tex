@@ -835,23 +835,48 @@ This issue is caused by the local planner failing to generate an effective comma
 
 \subsection{In reality}
 
-After the calibration of the parameters using the records, we tested how them perform in reality.
+After the calibration of the parameters using the records, we tested how them perform in reality, .
+
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/photo_mini_moving.jpg}
+	\end{subfigure}
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/photo_jobot_moving.jpg}
+	\end{subfigure}
+	\caption{The Mini and the Jobot moving through the building}
+\end{figure}
+
 
 \subsubsection{Mini test results}
 The results for the Mini improved a lot, while the doors are open the system manages to correct his position and move through the building without issue. But after the end of working time or if multiple person close their office doors, the robot could fails to correct his position. This happened some times when moving through a 22 m long hallway with door closed and the system at the end didn't managed to correct an error of about 1 m. After returned to the start position and the robot was reporting that was at the right position, can be deduced that the correction from AMCL was not applied. While in other situation he managed to recover his position thanks the actions (spin and backup) of the behavior tree of Nav2 that AMCL used to correct the position of the robot respect the map.\\
 But when we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
 One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera\cite{10056144}, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
-
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.5\linewidth]{img/possible error caused by not good estimation.png}
-	\captionof{figure}{Error when the estimation from AMCL fails}
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/possible error caused by not good estimation.png}
+	\end{subfigure}
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/photo_mini_fail_amcl.jpg}
+	\end{subfigure}
+	\caption{Examples when the estimation from AMCL fails}
 	\label{error local and global costamp}
 \end{figure}
-
 \subsubsection{Jobot test results}
 
-Since the odometry where better, this problem was not so much visible.
+Since the estimation of his odometry is better, the problem of non correct position relative to the map was not present.
+
+It was present an hight oscillation movment when it should go in a straight line. This was solved by adjusting the parameters for the MPPI local planner, following the guide in the documentation.
+
+Test were performed using DWB Planner to see that behaviour saw in simulation was the same. During test the problem appeared and so we choose to use the MPPI controller.
+
 
 
 \newpage
