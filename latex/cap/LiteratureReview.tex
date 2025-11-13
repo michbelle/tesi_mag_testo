@@ -108,7 +108,6 @@ Nav2 provides a comprehensive set of tools for perception, planning, control, lo
 \includegraphics[width=0.8\linewidth]{img/nav2_architecture.png}
 \captionof{figure}{Nav2 architecture} \label{Nav2Arch}
 \end{figure}
-\newpage
 Nav2 introduces several improvements over ROS 1, including:
 \begin{itemize}
 	\item \textbf{Behavior trees}\cite{Colledanchise_2018}: Nav2 uses Behavior Trees to structure and execute tasks in a human-readable and modular way. These trees enable the creation of complex systems and can be tested with various tools. The  BehaviorTree.CPP\footnote{\href{https://www.behaviortree.dev/}{https://www.behaviortree.dev/}} library is used to implement them, and it allows linking different trees for flexible behavior management.
@@ -119,7 +118,6 @@ Nav2 is composed of several key nodes that work together to control the robot:
 \begin{itemize}
 	\item \textbf{Controller Server}: Handles movement requests. It uses plugin-based modules such as a progress checker (to verify if the robot is making progress), goal checker (to determine if the robot has reached its destination) and a controller (to generate velocity commands using the \textbf{local costmap} while avoiding collisions).
 	\item \textbf{Planner Server}: Computes the global path to the destination using sensor data and a  plugin-based global planner loaded with the \textbf{global costmap}.
-	\newpage
 	\item \textbf{BT Navigator Server}: Implements the NavigateToPose, NavigateThroughPoses, and other task interfaces. It is a Behavior Tree-based implementation of navigation that is intended to allow for flexibility in the navigation task and provide a way to easily specify complex robot behaviors.
 	\begin{figure}[H]
 		\centering
