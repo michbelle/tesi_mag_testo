@@ -46,8 +46,14 @@ We converted all the code used to control the robot from ROS 1 to ROS 2, demonst
 We corrected the estimation in rotation by combining the velocity estimates from the robot and the gyroscope and with the AMCL we corrected the remaining error.
 $v_{yaw}$ of 320.0
 and for AMCL: $\alpha 1$ 0.01, $\alpha 2$ 0.001, $\alpha 3$ 0.001 and $\alpha 4$ 0.001
-\section{Open-RMF navigation result}
-These are some images of the navigation of the 2 robots
+\section{Open-RMF results}
+After following the steps we obtained this structure:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{img/global_scheme.drawio.png}
+	\captionof{figure}{Ending Real Global Structure with a basic navigation diagram}
+\end{figure}
+That allow us to start using the Open-RMF and send commands to the fleets, these are some images of the navigation of the 2 robots:
 \begin{figure}[H]
 \centering
 \includegraphics[width=1.0\linewidth]{img/rviz_gz_forOpenRMF.png}
