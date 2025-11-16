@@ -351,9 +351,9 @@ This launch file starts the following nodes, which form the core structure of RM
 
 Once the core system is launched, the next step is to connect our fleets using \textbf{fleet adapters}. Open-RMF provides the Free Fleet adapter, which is compatible with ROS 2 and Nav2. The following section will detail how this adapter works and how we integrated it into our system.
 
-\subsection{Free Fleet}
+\subsection{Free Fleet}\label{free_fleet}
 Free fleet\footnote{\href{https://github.com/open-rmf/free\_fleet}{https://github.com/open-rmf/free\_fleet}} is a python implementation of the \texttt{full\_control} Open-RMF Fleet Adapter\footnote{\href{https://github.com/open-rmf/fleet_adapter_template}{https://github.com/open-rmf/fleet\_adapter\_template}}, which serves as a general template for communicating with a fleet manager. Its primary goal is to control robots running under both ROS 1 and ROS 2.
-It uses \texttt{zenoh} as a communication layer between each robot and the fleet adapter.
+It uses \texttt{zenoh} as a communication layer between each robot and the fleet adapter. For now it support the \texttt{cyclonedds} RMW, other RMW implementations will be set up in the future.
 Below is an overview of how communication is managed using the Free Fleet adapter:
 \begin{figure}[h]
 	\centering
