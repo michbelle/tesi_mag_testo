@@ -19,9 +19,9 @@ We have successfully ported the code to ROS 2 and used it for navigation. This i
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\linewidth]{img/Dstar_plan_ufficio_ripostiglio.png}
-	\captionof{figure}{results obtained by the Dstar planner}
+	\captionof{figure}{Result obtained by the Dstar planner}
 \end{figure}
-In the end, the logical transformation from the \texttt{move\_base} logic in ROS 1 to the Planner Server used in ROS 2 for the global planner is based on the application of more advanced functionalities of the programming languages used. We also discovered that several improvements need to be made to enhance the performance of the planner within ROS 2.
+In the end, the logical transformation from the \texttt{move\_base} logic in ROS 1 to the Planner Server used in ROS 2 for the global planner is based on the application of more advanced functionalities of the programming languages used and the use of the lifecycle structure. We also discovered that several improvements need to be made to enhance the performance of the planner Dstar within ROS 2.
 
 \newpage
 \section{Build 2 AMR in ROS 2}
@@ -32,7 +32,7 @@ In the end, both robots were added, both in simulation to test the capabilities 
 	\centering
 	\includegraphics[width=1.0\linewidth]{img/gazebo_both_robot.png}
 	\includegraphics[width=1.0\linewidth]{img/rviz_both_robot.png}
-	\captionof{figure}{both robots simulated}
+	\captionof{figure}{Both robots in simulation}\label{fig:simul no collision}
 \end{figure}
 
 
@@ -40,12 +40,10 @@ In the end, both robots were added, both in simulation to test the capabilities 
 \subsection{In particular for the Mini}
 We found issues with his position estimation, which we resolved by tuning the parameters of the AMCL accordingly. We achieved the best performance with the following values for the process covariance matrix: 
 $v_{yaw}$ of 10.0
-and for AMCL: $\alpha 1$ 0.01, $\alpha 2$ 0.01, $\alpha 3$ 0.1 and $\alpha 4$ 0.0001
+and for AMCL: $\alpha 1$ = 0.01, $\alpha 2$ = 0.01, $\alpha 3$ = 0.1 and $\alpha 4$ = 0.0001
 \section{In particolar for the jobot}
 We converted all the code used to control the robot from ROS 1 to ROS 2, demonstrating the portability of that code structure. We added the Lifecycle to be implemented as part of the boot sequence of the robot with Nav2 and its sensors. 
-We corrected the estimation in rotation by combining the velocity estimates from the robot and the gyroscope and with the AMCL we corrected the remaining error.
-$v_{yaw}$ of 320.0
-and for AMCL: $\alpha 1$ 0.01, $\alpha 2$ 0.001, $\alpha 3$ 0.001 and $\alpha 4$ 0.001
+We corrected the estimation in rotation by combining the velocity estimates from the robot and the gyroscope and with the AMCL we corrected the remaining error, obtaining these values: 320.0 for $v_{yaw}$ of the process covariance matrix and for AMCL: $\alpha 1$ = 0.01, $\alpha 2$ = 0.001, $\alpha 3$ = 0.001 and $\alpha 4$ = 0.001
 \section{Open-RMF results}
 After following the steps we obtained this structure:
 \begin{figure}[H]
@@ -60,12 +58,26 @@ That allow us to start using the Open-RMF and send commands to the fleets, these
 \includegraphics[width=1.0\linewidth]{img/web_interface_forOpenRMF.png}
 \captionof{figure}{images navigation of the 2 robots with open-rmf in simulated environment}
 \end{figure}
-The results are promising, and this is a solution that can be implemented in our workspace. We tested the patrol task, and the robots moved through the building, avoiding traffic jams and finding the best paths.
+The results are promising, and this is a solution that can be implemented in our workspace. We tested the patrol task, and the robots moved through the building, avoiding traffic jams (example: \ref{fig:Mini waiting the Jobot}) and finding the best paths.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{img/open-RMF-robots_moving.jpg}
+		\caption{Robots navigating under the control of Open-RMF}
+	\end{subfigure}
+	\begin{subfigure}{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{img/open-RMF-miniWaitingJobot.jpg}
+		\caption{Mini waiting the Jobot}
+		\label{fig:Mini waiting the Jobot}
+	\end{subfigure}
+	\caption{Open-RMF results}
+\end{figure}
 
 \chapter{Comparative analysis on the port system}
-In this section, we evaluate the time required by the planner to find a path, comparing it with the default planner.
 \section{Planner calculation time comparison}
-In this section, we show the time required for the global planner node to calculate different path, we comparated the performance between the DStar global planner and the NavfnPlanner over 3 path: from the office to the storage room (used as base in the setting up the parameters), from the office to the entrance of the building (fig: \ref{Dstar:uff->entr},\ref{Navfn:uff->entr})and from the entrance to the our CAD designers location(fig:\ref{Dstar:entr->CAD},\ref{Navfn:entr->CAD}). The results were obtained in a jazzy docker image with a Intel i5-1345U CPU and adding the flag: \\ \hspace*{1cm}\texttt{--cmake-args -DCMAKE\_BUILD\_TYPE=Release}\\ to the call of \texttt{colcon build}.
+In this section, we show the time required for the global planner node to calculate different paths, we comparated the performance between the DStar global planner and the NavfnPlanner over 3 path: from the office to the storage room (used as base in the setting up the parameters), from the office to the entrance of the building (fig: \ref{Dstar:uff->entr},\ref{Navfn:uff->entr})and from the entrance to the our CAD designers location(fig:\ref{Dstar:entr->CAD},\ref{Navfn:entr->CAD}). The results were obtained in a jazzy docker image with a Intel i5-1345U CPU and adding the flag: \\ \hspace*{1cm}\texttt{--cmake-args -DCMAKE\_BUILD\_TYPE=Release}\\ to the call of \texttt{colcon build}.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|}

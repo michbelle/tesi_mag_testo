@@ -47,7 +47,7 @@ The official ROS documentation\footnote{\href{https://docs.ros.org/en/rolling/in
 		\includegraphics[width=1.0\linewidth]{img/Service.png}
 		\captionof{figure}{Service process}
 	\end{center}
-	\item \textbf{Parameters}: Parameters are configurations of a node that can be modified without changing the source code.
+	\item \textbf{Parameters}: Parameters are used to configure nodes at startup (and during runtime), without changing the code.
 	\item \textbf{Actions}\label{Action}: Actions are designed to support long-running tasks that require feedback and the capability to interrupt when needed. They combine two services (goal and result) and a publisher-subscriber mechanism (feedback). A node sends a goal request and receives an acknowledgment, then starts publishing feedback messages while executing the task, and finally the action server responds with the result.
 	\begin{center}
 		\captionsetup{type=figure}

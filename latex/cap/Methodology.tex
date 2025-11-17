@@ -837,7 +837,7 @@ After the calibration of the parameters using the records, we tested how them pe
 \subsubsection{Mini test results}
 The results for the Mini improved a lot, while the doors are open the system manages to correct his position and move through the building without issue. But after the end of working time or if multiple person close their office doors, the robot could fails to correct his position. This happened some times when moving through a 22 m long hallway with door closed and the system at the end didn't managed to correct an error of about 1 m. After returned to the start position and the robot was reporting that was at the right position, can be deduced that there was not correction performed by the AMCL. While in other situation he managed to recover his position thanks the actions (spin and backup) of the behavior tree of Nav2 that AMCL used to correct the position of the robot respect the map.\\
 But when we ask the robot to move to a location and the AMCL doesn't manage to correct the position in time, the robot will respond that no path was found. This happens because the position of the door in the global costmap is not aligned with the position of the door in the local costmap, resulting in the path being blocked for the global planner, as shown in picture \ref{error local and global costamp}.\\
-One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera\cite{10056144}, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
+One solution could be to rotate beforehand, allowing the AMCL to correct the error between the odometry frame and the map frame by adjusting the parameter that regulates the error caused by rotation. This can be implemented in openRMF by adding a vertex before the door to help correct the translation error, enabling the generation of a path to enter through the door. Another solution is to improve the odometry estimation of the Mini by using absolute reference markers visible to a camera\cite{10056144}\cite{olson2011tags}, allowing the localization node to have periodic absolute corrections, similar to GPS. This enhancement can also facilitate corrections and movement outside the facility, allowing navigation between buildings to correct its absolute position.
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{0.4\textwidth}
@@ -864,17 +864,24 @@ Test were performed using DWB Planner to see that behaviour saw in simulation wa
 
 After some testing, these are the problems we found:
 \begin{itemize}
-\item The testing revealed some design issues with the rover. 
+\item The testing revealed some design issues with the Mini.
 When operating in an office environment, the robot’s laser sensor cannot detect certain parts of obstacles, as shown in the image below.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/problem\_chair.jpg}
-	\captionof{figure}{Laser position error}
+	\captionof{figure}{Mini error in obstacle detection}
 \end{figure}
 One possible solution is to reduce the free space from the occupancy map. However, the dimensions of the chair legs are quite long, significantly reducing the available space to pass through doors, which the planner currently prevents.
 Another option is to relocate the LIDAR sensor underneath the robot. This would require a low-profile LIDAR and would create blind spots by the wheels if no additional sensors are added on top.
 A cheap solution is to add some ultrasonic sensor with an high field of view to catch these object that the LIDAR doesn't see.
 Alternatively, adding a depth camera could provide a 3D occupancy grid, which can then be processed to generate a 2D costmap.
+This also applies to the Jobot, where its laser is positioned higher than the Mini (see \ref{fig:laser_high_error_Mini_Jobot} and \ref{fig:simul no collision}) and so the laser cannot see the Mini, creating a potential collision risk. This problem is solved by the Open-RMF traffic manager because it knows the position of all the robots and can prevent the Jobot from moving too close to the Mini.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/laser_high_error_Mini_Jobot.jpg}
+	\captionof{figure}{Jobot error in obstacle detection}
+	\label{fig:laser_high_error_Mini_Jobot}
+\end{figure}
 \item The ROS 2 infrastructure allows all devices within the same subnet to connect through multicasting. To avoid multiple nodes publishing to the same topic and creating errors in communication, several solutions are available:
 \begin{itemize}
  \item some depending from the middleware used (cycloneDDS, FastRTS),
