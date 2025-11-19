@@ -2,7 +2,7 @@
 The integration of autonomous robots into our daily environments is increasing significantly to reduce costs associated with package logistics\cite{5262912}\cite{PEREZGRAU2021312} and their use in various environments such as hospitals\cite{technologies9010008}\cite{10.1007/978-3-030-57993-7_76}, mining \cite{grehl2015mining}, warehouses\cite{poudel2013coordinating}\cite{keith2024reviewautonomousmobilerobots} and agriculture\cite{machines11010048}. For a long period, the solution for moving objects in various industries has been the use of automated guided vehicles (AGVs). These vehicles rely on markers or laser systems to navigate their surroundings. However, in environments such as office buildings, where interaction with humans is constant, the use of automated guided vehicles (AGVs) poses challenges. AGVs often cannot bypass obstacles or cannot enter some areas due to safety and space concerns, so it necessitates the use of autonomous mobile robots (AMRs)\cite{10797381} with their more autonomy capabilities can overcome these challenges.
 There are several types of AMRs that can be divided by the type of locomotion: wheeled robots, tracked robots and legged robots. Since wheeled robots offer several advantages, such as energy efficiency, higher payload capacity\cite{tagliavini2022wheeled}, increased stability \cite{doi:10.1177/1729881419839596}, lower mechanical complexity, and ease of control in structured environments\cite{ms-3-49-2012} they are the optimal solution for tasks that are performed in an office.
 Wheeled robots can adopt various locomotion models: differential drive systems (which utilize differential steering or skid steering techniques), omni-wheels and Ackermann steering. 
-Given the advantages of the differential drive, such as greater payload and increased maneuverability without the need for a mechanical steering subsystem, the differential drive structure is the most used for robotics application \cite{5427035}\cite{tagliavini2022wheeled} in small spaces.\\
+Given the advantages of the differential drive, such as greater payload and increased maneuverability without the need for a mechanical steering subsystem, the differential drive structure is the most used for robotics application \cite{5427035}\cite{tagliavini2022wheeled} in small spaces.
 These robots leverage various proprietary software solutions alongside open-source platforms such as Ardupilot\cite{11163478} and Robot Operating System ROS\cite{quigley2009ros} to navigate in the environment. Originally developed as an academic project, ROS has greatly expanded its application scope\cite{Macenski_2022}. Transitioning to ROS 2 introduced new features for data transfer\cite{pardo2005introduction}, executing nodes\cite{macenski2023impactros2node},lifecycle node management, and security\cite{vilches2022sros2usablecybersecurity}, which facilitate its adoption in production environments (see \ref{lab:ros} and \ref{lab:port12}).\\
 Among the projects built on ROS\cite{EasyNav}\cite{macenski2020marathon2} for navigation, Nav2 stands out for its ability to manage autonomous navigation\cite{example1nav2}\cite{8735597}. Given the robot’s position estimation within a map, which can be obtained through state estimation utilizing sensor data \cite{MooreStouchKeneralizedEkf2014} in combination with a Simultaneous Localization And Mapping (SLAM)\cite{45466}\cite{Macenski2021}\cite{vslamComparison2021}\cite{sh-p1-prelude} or through localization alone \cite{AMCL_base_teoria}\cite{das2025robotlocalizationmappedenvironment} if a map is already available, a robot can effectively navigate its environment (see \ref{lab:nav2}).
 In our current work, we aim to control a two differential drive Unmanned Ground Vehicle (UGV) using Nav2. Its modularity allows for the evaluation of multiple global \cite{macenski2023survey}\cite{10.1007/978-3-031-67295-8_33} and local \cite{580977}\cite{7487277} planners.\\
@@ -97,6 +97,7 @@ Gazebo offers:
 		\end{subfigure}
 		\captionof{figure}{Examples of Gazebo}
 \end{figure}
+\newpage
 \section{Introduction to NAV2 and Google Cartographer}\label{lab:nav2}
 Multiple tools are available to enable a robot to move autonomously within an environment. One of the most complete systems is Nav2 
 \footnote{\href{https://nav2.org/}{https://nav2.org/}}
@@ -179,6 +180,7 @@ Figure \ref{fig:Open-RMF Structure} illustrates the architecture and operational
 	\captionof{figure}{Open-RMF Structure}
 	\label{fig:Open-RMF Structure}
 \end{figure}
+\newpage
 The fleets that can be controlled through Open-RMF can be categorized into three types:
 \begin{itemize}
 	\item \textit{Full Control}: Fleets of this type provide full status updates and allow complete control over path planning and execution.

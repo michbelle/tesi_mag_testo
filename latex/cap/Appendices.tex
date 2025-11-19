@@ -1,5 +1,8 @@
-%\part{Appendices}
 \chapter{Appendices}
 \section{Simulation}
-In the code, following the \texttt{README.md} files and inside the \texttt{.devcontainer} folders, Dockerfiles and instruction how to use them are available for simulation. All container obtained by these images can be used directly to simulate the code.\\
+In the repository \ref{code_path}, there are Dockerfiles with \texttt{README.md} files that explain how to build a Docker image and run the simulation created in this thesis.\\
 When the use of a program inside the container with a graphical interface is required,  you have to share the access to the X server using the command \texttt{xhost local:root}.\\
+At least 3 GB of VRAM are required to run a fluid simulation.
+\section{Sensor data acquired during navigation with robots}\label{Sensor data}
+The data acquired with rosbag2 are publicly available here \cite{data}.
+The data from the Mini were acquired in ROS Humble using the format is \texttt{.db3}, while for the Jobot, recorded under ROS Jazzy, the data are in \texttt{.mcap}. The data form the Jobot are compressed using the \texttt{--compression-mode file} flag and split in \texttt{.mcap} files of 1GB each using the flag \texttt{-b 1000000000}, more info are available in the \texttt{README.md} files.
